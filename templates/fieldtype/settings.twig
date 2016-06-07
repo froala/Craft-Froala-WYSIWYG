@@ -1,0 +1,54 @@
+{% import "_includes/forms" as forms %}
+
+{% macro uploadLocationInput(name, settings, sourceOptions) %}
+    {% from "_includes/forms" import select, text %}
+    <table class="inputs fullwidth">
+        <tr>
+            <td class="thin">
+                {{ select({
+                    id: name ~ 'Source',
+                    name: name ~ 'Source',
+                    options: sourceOptions,
+                    value: settings[name ~ 'Source'],
+                }) }}
+            </td>
+            <td>
+                {{ text({
+                    id: name ~ 'SubPath',
+                    class: 'ltr',
+                    name: name ~ 'SubPath',
+                    value: settings[name ~ 'SubPath'],
+                    placeholder: "path/to/subfolder"|t
+                }) }}
+            </td>
+        </tr>
+    </table>
+{% endmacro %}
+
+{% from _self import uploadLocationInput %}
+
+{% set uploadInstructions = 'Where should files be uploaded when they are dragged directly onto the field, or uploaded from the front end?' %}
+{% set uploadInstructions = uploadInstructions ~ ' Note that the subfolder path can contain variables like <code>{slug}</code> or <code>{author.username}</code>.' %}
+
+{{ forms.field({
+    label: 'Images Location'|t,
+    instructions: uploadInstructions|t,
+    errors: settings.getErrors('assetsImagesSubPath')
+}, uploadLocationInput('assetsImages', settings, sourceOptions)) }}
+
+{{ forms.field({
+    label: 'Files Location'|t,
+    instructions: uploadInstructions|t,
+    errors: settings.getErrors('assetsFilesSubPath')
+}, uploadLocationInput('assetsFiles', settings, sourceOptions)) }}
+
+<hr>
+
+{{ forms.checkboxSelectField({
+    label: 'Enabled Plugins'|t,
+    instructions: 'Enable or disable plugins to use for the editor.'|t,
+    id: 'enabledPlugins',
+    name: 'enabledPlugins',
+    options: editorPlugins,
+    values: settings.enabledPlugins
+}) }}

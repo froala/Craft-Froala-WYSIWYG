@@ -1,0 +1,22 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    id: 'licenseKey',
+    name: 'licenseKey',
+    label: 'License Key'|t,
+    value: settings.licenseKey,
+    first: true,
+    autofocus: true,
+    instructions: 'The license key for Froala editor usage on the current domain.'|t
+}) }}
+
+<hr>
+
+{{ forms.checkboxSelectField({
+    label: 'Enabled Plugins'|t,
+    instructions: 'Enable or disable plugins to use for the editor. This is the overall setting. Fields can have their own enabled plugins, limited to this list.'|t,
+    id: 'enabledPlugins',
+    name: 'enabledPlugins',
+    options: editorPlugins,
+    values: settings.enabledPlugins
+}) }}
