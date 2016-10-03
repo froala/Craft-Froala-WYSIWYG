@@ -99,7 +99,11 @@ class FroalaEditorPlugin extends BasePlugin
             'enabledPlugins' => array(AttributeType::Mixed),
         );
     }
-    
+
+    /**
+     * Returns all possible plugins for the editor
+     * @return array
+     */
     public function getEditorPlugins()
     {
         $pluginDir = __DIR__ . DIRECTORY_SEPARATOR;
