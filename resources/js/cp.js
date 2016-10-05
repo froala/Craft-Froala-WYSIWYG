@@ -4,8 +4,9 @@ $.FroalaEditor.RegisterCommand('linkEntry', {
     focus: true,
     refreshAfterCallback: true,
     callback: function (cmd, val) {
-        var currentLocale = Craft.getLocalStorage('BaseElementIndex.locale') || Craft.locale;
-        var editor = this;
+        var currentLocale = (Craft.getLocalStorage('BaseElementIndex.locale') || Craft.locale),
+            _editor = this,
+            _selectedText = (this.selection.text() || false);
 
         var modal = Craft.createElementSelectorModal('Entry', {
             criteria: { locale: currentLocale },
@@ -14,16 +15,13 @@ $.FroalaEditor.RegisterCommand('linkEntry', {
 
                     var element = elements[0];
                     var url = element.url + '#entry:' + element.id;
-                    var urlLabel = element.label;
+                    var urlLabel = _selectedText || element.label;
 
-                    // when a text already is selected
-                    var selectedText = editor.selection.get();
-                    if (selectedText.length > 0) {
-                        urlLabel = selectedText;
+                    if (_selectedText !== false) {
+                        _editor.html.insert('<a href="' + url + '">' + urlLabel + '</a>');
+                    } else {
+                        _editor.link.insert(url, urlLabel);
                     }
-
-                    // insert link
-                    editor.link.insert(url, urlLabel);
 
                     return true;
                 }
