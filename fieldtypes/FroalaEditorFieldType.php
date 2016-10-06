@@ -84,30 +84,35 @@ class FroalaEditorFieldType extends BaseFieldType
     public function getToolbarButtons($size = 'lg', $enabledPlugins = '*')
     {
         $buttons = [
-            'fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
-            'fontFamily', 'fontSize', '|', 'color', 'emoticons', 'inlineStyle', 'paragraphStyle', '|',
-            'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertHR',
-            '-', 'linkEntry', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', 'undo', 'redo',
+            'fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', '|',
+            'color', 'emoticons', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent',
+            'indent', 'quote', 'insertHR', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', 'undo', 'redo',
             'clearFormatting', 'selectAll', 'html'
         ];
 
         switch ($size) {
             case 'md':
-                $buttons = [
-                    'fullscreen', 'bold', 'italic', 'underline', 'fontFamily', 'fontSize', 'color', 'paragraphStyle',
-                    'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertHR',
-                    'linkEntry', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', 'undo', 'redo', 'clearFormatting'
+                $buttons = 	[
+                    'fullscreen', 'bold', 'italic', 'underline', 'fontFamily', 'fontSize', 'color', 'paragraphStyle', 'paragraphFormat',
+                    'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertHR', 'insertLink', 'insertImage', 'insertVideo',
+                    'insertFile', 'insertTable', 'undo', 'redo', 'clearFormatting'
                 ];
                 break;
             case 'sm':
                 $buttons = [
                     'fullscreen', 'bold', 'italic', 'underline', 'fontFamily', 'fontSize',
-                    'linkEntry', 'insertImage', 'insertTable', 'undo', 'redo'
+                    'insertLink', 'insertImage', 'insertTable', 'undo', 'redo'
                 ];
                 break;
             case 'xs':
                 $buttons = [
-                    'bold', 'italic', 'fontFamily', 'fontSize', 'undo', 'redo'
+                    'bold', 'italic', 'insertLink', 'insertImage', 'insertFile', 'undo', 'redo'
+                ];
+                break;
+
+            case 'quick':
+                $buttons = [
+                    'ul', 'ol', 'insertLink', 'insertImage', 'insertFile'
                 ];
                 break;
         }
@@ -116,6 +121,26 @@ class FroalaEditorFieldType extends BaseFieldType
         if ($enabledPlugins != '*' && is_array($enabledPlugins)) {
 
             // @TODO filter buttons against enabled plugins
+        }
+
+        // -------------------------------
+        // Craft's replacements
+
+        foreach ($buttons as $key => $button) {
+            switch ($button) {
+                case 'link':
+                case 'insertLink':
+                    $buttons[$key] = 'insertLinkEntry';
+                    break;
+                case 'image':
+                case 'insertImage':
+                    $buttons[$key] = 'insertAssetImage';
+                    break;
+                case 'file':
+                case 'insertFile':
+                    $buttons[$key] = 'insertAssetFile';
+                    break;
+            }
         }
 
         return $buttons;
@@ -156,7 +181,10 @@ class FroalaEditorFieldType extends BaseFieldType
         craft()->templates->includeCssResource('froalaeditor/css/cp.css');
 
         craft()->templates->includeJsResource('froalaeditor/lib/v' . $froalaVersion . '/js/froala_editor.pkgd.min.js');
-        craft()->templates->includeJsResource('froalaeditor/js/cp.js');
+
+        craft()->templates->includeJsResource('froalaeditor/js/icons.js');
+        craft()->templates->includeJsResource('froalaeditor/js/buttons.js');
+        craft()->templates->includeJsResource('froalaeditor/js/quickInsert.js');
 
         // Activate editor
         craft()->templates->includeJs("$('#{$namespacedId}').froalaEditor({
@@ -166,6 +194,7 @@ class FroalaEditorFieldType extends BaseFieldType
             , toolbarButtonsMD: ['" . implode("','", $this->getToolbarButtons('md', $enabledPlugins)) . "']
             , toolbarButtonsSM: ['" . implode("','", $this->getToolbarButtons('sm', $enabledPlugins)) . "']
             , toolbarButtonsXS: ['" . implode("','", $this->getToolbarButtons('xs', $enabledPlugins)) . "']
+            , quickInsertButtons: ['" . implode("','", $this->getToolbarButtons('quick', $enabledPlugins)) . "']
         });");
 
         return craft()->templates->render('froalaeditor/fieldtype/input', array(
