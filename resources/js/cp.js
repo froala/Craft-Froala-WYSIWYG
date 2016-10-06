@@ -8,6 +8,9 @@ $.FroalaEditor.RegisterCommand('linkEntry', {
             _editor = this,
             _selectedText = (this.selection.text() || false);
 
+        // save selection before modal is shown
+        this.selection.save();
+
         var modal = Craft.createElementSelectorModal('Entry', {
             criteria: { locale: currentLocale },
             onSelect: $.proxy(function (elements) {
@@ -17,11 +20,7 @@ $.FroalaEditor.RegisterCommand('linkEntry', {
                     var url = element.url + '#entry:' + element.id;
                     var urlLabel = _selectedText || element.label;
 
-                    if (_selectedText !== false) {
-                        _editor.html.insert('<a href="' + url + '">' + urlLabel + '</a>');
-                    } else {
-                        _editor.link.insert(url, urlLabel);
-                    }
+                    _editor.link.insert(url, urlLabel);
 
                     return true;
                 }
