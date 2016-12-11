@@ -124,4 +124,15 @@ class FroalaEditorPlugin extends BasePlugin
         
         return $plugins;
     }
+
+    /**
+     * @param string $msg
+     * @param string $logLevel
+     * @param bool $force
+     * @return void
+     */
+    public static function log($msg, $logLevel = LogLevel::Info, $force = false)
+    {
+        Craft::log($msg, $logLevel, $force, 'application', 'FroalaEditor');
+    }
 }

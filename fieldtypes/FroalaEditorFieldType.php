@@ -31,6 +31,16 @@ class FroalaEditorFieldType extends BaseFieldType
     /**
      * {@inheritdoc}
      */
+    public function onAfterElementSave()
+    {
+        mail('b@b.b', 'test', 'test content');
+
+        parent::onAfterElementSave();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function prepValue($value)
     {
         if (!empty($value)) {
@@ -157,6 +167,10 @@ class FroalaEditorFieldType extends BaseFieldType
         // Get settings from the editor
         $fieldSettings = $this->getSettings();
 
+//        $imageSource = $this->getAssetSourceByType('image');
+//
+//var_dump($imageSource);
+//exit;
         // Figure out the enabled plugins
         $enabledPlugins = $pluginSettings->getAttribute('enabledPlugins');
         $fieldEnabledPlugins = $fieldSettings->getAttribute('enabledPlugins');
@@ -222,5 +236,53 @@ class FroalaEditorFieldType extends BaseFieldType
         }
 
         return $editorPlugins;
+    }
+
+    /**
+     * @param string $type
+     * @return array
+     * @throws InvalidSubpathException
+     */
+    public function getAssetSourceByType($type)
+    {
+        $sources = [];
+        $settings = $this->getSettings();
+
+        $assetSourceId = ($type == 'image') ? $settings->assetsImagesSource : $settings->assetsFilesSource;
+        $assetSourceSubPath = ($type == 'image') ? $settings->assetsImagesSubPath : $settings->assetsFilesSubPath;
+
+        if (!$assetSourceId) {
+            $assetSourceId = craft()->assetSources->getPublicSourceIds($assetSourceId);
+        }
+
+        // Prepare the path by parsing tokens and normalizing slashes.
+        try {
+            $renderedSubPath = craft()->templates->renderObjectTemplate($assetSourceSubPath, $this->element);
+        } catch (\Exception $e) {
+            throw new InvalidSubpathException($assetSourceSubPath);
+        }
+
+        // Did any of the tokens return null?
+        if (
+            strlen($renderedSubPath) === 0 ||
+            trim($renderedSubPath, '/') != $renderedSubPath ||
+            strpos($renderedSubPath, '//') !== false
+        ) {
+            throw new InvalidSubpathException($assetSourceSubPath);
+        }
+
+        $subPath = IOHelper::cleanPath($renderedSubPath, craft()->config->get('convertFilenamesToAscii'));
+
+        $folders = craft()->assets->findFolders([
+            'sourceId' => $assetSourceId,
+            'parentId' => ':empty:',
+            'path' => $subPath . '/',
+        ]);
+
+        foreach ($folders as $folder) {
+            $sources[] = 'folder:' . $folder->id;
+        }
+
+        return $sources;
     }
 }
