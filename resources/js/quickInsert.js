@@ -48,7 +48,7 @@ $.extend($.FroalaEditor.QUICK_INSERT_BUTTONS, {
             this.selection.save();
 
             var modal = Craft.createElementSelectorModal('Asset', {
-                criteria: { locale: currentLocale, kind: 'image' },
+                criteria: { locale: currentLocale, kind: ['image'] },
                 multiSelect: true,
                 sources: [
                     _editor.$oel[0].dataset.sourceImages
@@ -86,7 +86,7 @@ $.extend($.FroalaEditor.QUICK_INSERT_BUTTONS, {
             this.selection.save();
 
             var modal = Craft.createElementSelectorModal('Asset', {
-                criteria: { locale: currentLocale },
+                criteria: { locale: currentLocale, kind: ['excel', 'pdf', 'powerpoint', 'text', 'word'] },
                 multiSelect: true,
                 sources: [
                     _editor.$oel[0].dataset.sourceFiles

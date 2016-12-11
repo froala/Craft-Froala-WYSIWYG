@@ -49,7 +49,7 @@ $.FroalaEditor.RegisterCommand('insertAssetImage', {
         this.selection.save();
 
         var modal = Craft.createElementSelectorModal('Asset', {
-            criteria: { locale: currentLocale, kind: 'image' },
+            criteria: { locale: currentLocale, kind: ['image'] },
             multiSelect: true,
             sources: [
                 _editor.$oel[0].dataset.sourceImages
@@ -90,7 +90,7 @@ $.FroalaEditor.RegisterCommand('insertAssetFile', {
         this.selection.save();
 
         var modal = Craft.createElementSelectorModal('Asset', {
-            criteria: { locale: currentLocale },
+            criteria: { locale: currentLocale, kind: ['excel', 'pdf', 'powerpoint', 'text', 'word'] },
             multiSelect: true,
             sources: [
                 _editor.$oel[0].dataset.sourceFiles

@@ -456,12 +456,6 @@ class FroalaEditorFieldType extends BaseFieldType
                 break;
         }
 
-        // compare against enabled plugins
-        if ($enabledPlugins != '*' && is_array($enabledPlugins)) {
-
-            // @TODO filter buttons against enabled plugins
-        }
-
         // -------------------------------
         // Craft's replacements
 
@@ -479,6 +473,23 @@ class FroalaEditorFieldType extends BaseFieldType
                 case 'insertFile':
                     $buttons[$key] = 'insertAssetFile';
                     break;
+            }
+        }
+
+        // -------------------------------
+        // Compare against enabled plugins
+        if ($enabledPlugins != '*' && is_array($enabledPlugins)) {
+
+            $checkList = ['link', 'image', 'file'];
+
+            foreach ($checkList as $checkName) {
+                if (!in_array($checkName, $enabledPlugins)) {
+                    foreach ($buttons as $key => $button) {
+                        if (stristr($button, $checkName) !== false) {
+                            unset($buttons[$key]);
+                        }
+                    }
+                }
             }
         }
 
