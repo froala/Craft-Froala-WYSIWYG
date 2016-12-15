@@ -1,0 +1,17 @@
+v*/*.*
+v*/html/
+v*/less/
+v*/img/
+
+v*/css/*.css
+!v*/css/*.min.css
+!v*/css/*.pkgd.css
+v*/css/plugins/*.css
+!v*/css/plugins/*.min.css
+!v*/css/plugins/*.pkgd.css
+v*/js/*.js
+!v*/js/*.min.js
+!v*/js/*.pkgd.js
+v*/js/plugins/*.js
+!v*/js/plugins/*.min.js
+!v*/js/plugins/*.pkgd.js
