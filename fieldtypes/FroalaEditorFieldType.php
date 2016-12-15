@@ -329,9 +329,15 @@ class FroalaEditorFieldType extends BaseFieldType
 
         craft()->templates->includeJsResource('froalaeditor/lib/v' . $froalaVersion . '/js/froala_editor.pkgd.min.js');
 
+        // custom replacements
+        craft()->templates->includeJsResource('froalaeditor/js/generic.js');
         craft()->templates->includeJsResource('froalaeditor/js/icons.js');
-        craft()->templates->includeJsResource('froalaeditor/js/buttons.js');
-        craft()->templates->includeJsResource('froalaeditor/js/quickInsert.js');
+        craft()->templates->includeJsResource('froalaeditor/js/buttons/file.js');
+        craft()->templates->includeJsResource('froalaeditor/js/buttons/image.js');
+        craft()->templates->includeJsResource('froalaeditor/js/buttons/link.js');
+        craft()->templates->includeJsResource('froalaeditor/js/quick/file.js');
+        craft()->templates->includeJsResource('froalaeditor/js/quick/image.js');
+        craft()->templates->includeJsResource('froalaeditor/js/quick/link.js');
 
         // Activate editor
         craft()->templates->includeJs("$('#{$namespacedId}').froalaEditor({

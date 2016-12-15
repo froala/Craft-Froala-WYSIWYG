@@ -1,14 +1,22 @@
 [
   {
+    "version": "1.0.2",
+    "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/master.zip",
+    "date": "2016-12-15T21:15:00+01:00",
+    "notes": [
+      "[Fixed] Replacing images in editor opens Craft's Asset modal again [#1 theskyfloor]",
+      "[Added] Support for control + save to save the entry"
+    ]
+  },{
     "version": "1.0.1",
-    "downloadUrl": "https://github.com/bertoost/Craft-FroalaEditor/archive/master.zip",
+    "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/master.zip",
     "date": "2016-12-12T14:40:00+01:00",
     "notes": [
       "[Added] Updated Froala Editor to v2.4.0"
     ]
   },{
     "version": "1.0.0",
-    "downloadUrl": "https://github.com/bertoost/Craft-FroalaEditor/archive/master.zip",
+    "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/master.zip",
     "date": "2016-12-11T14:00:00+01:00",
     "notes": [
       "[Added] Initial release"
