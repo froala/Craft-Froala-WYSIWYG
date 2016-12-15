@@ -5,6 +5,7 @@
     "date": "2016-12-15T21:15:00+01:00",
     "notes": [
       "[Fixed] Replacing images in editor opens Craft's Asset modal again [#1 theskyfloor]",
+      "[Added] Added support for using image transforms in image replace modal [#3 lboaretto]",
       "[Added] Support for control + save to save the entry"
     ]
   },{

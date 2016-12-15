@@ -15,6 +15,8 @@ $.FroalaEditor.RegisterCommand('insertAssetImage', {
         var modal = Craft.createElementSelectorModal('Asset', {
             criteria: { locale: currentLocale, kind: ['image'] },
             multiSelect: true,
+            canSelectImageTransforms: (typeof _froalaEditorTransforms != 'undefined'),
+            transforms: (typeof _froalaEditorTransforms != 'undefined') ? _froalaEditorTransforms : false,
             sources: [
                 _editor.$oel[0].dataset.sourceImages
             ],
@@ -49,6 +51,8 @@ $.FroalaEditor.RegisterCommand('imageReplace', {
         var modal = Craft.createElementSelectorModal('Asset', {
             criteria: { locale: currentLocale, kind: ['image'] },
             multiSelect: true,
+            canSelectImageTransforms: (typeof _froalaEditorTransforms != 'undefined'),
+            transforms: (typeof _froalaEditorTransforms != 'undefined') ? _froalaEditorTransforms : false,
             sources: [
                 _editor.$oel[0].dataset.sourceImages
             ],

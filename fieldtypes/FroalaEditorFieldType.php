@@ -339,6 +339,21 @@ class FroalaEditorFieldType extends BaseFieldType
         craft()->templates->includeJsResource('froalaeditor/js/quick/image.js');
         craft()->templates->includeJsResource('froalaeditor/js/quick/link.js');
 
+        // get image transforms to use in the modal
+        $allTransforms = craft()->assetTransforms->getAllTransforms('name');
+        if (!empty($allTransforms)) {
+
+            $transforms = [];
+            foreach ($allTransforms as $singleTransform) {
+                $transforms[] = [
+                    'handle' => $singleTransform->handle,
+                    'name'   => $singleTransform->name,
+                ];
+            }
+
+            craft()->templates->includeJs("var _froalaEditorTransforms = " . JsonHelper::encode($transforms) . ";");
+        }
+
         // Activate editor
         craft()->templates->includeJs("$('#{$namespacedId}').froalaEditor({
             key: '" . $pluginSettings->getAttribute('licenseKey') . "'
