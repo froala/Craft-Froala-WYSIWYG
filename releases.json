@@ -1,5 +1,13 @@
 [
   {
+    "version": "1.0.3",
+    "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/master.zip",
+    "date": "2017-01-02T11:00:00+01:00",
+    "notes": [
+      "[Fixed] Database column type set to TEXT instead of VARCHAR. Will be fixed for fields after update (migration).",
+      "[Added] Documentation URL"
+    ]
+  },{
     "version": "1.0.2",
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/master.zip",
     "date": "2016-12-15T21:15:00+01:00",

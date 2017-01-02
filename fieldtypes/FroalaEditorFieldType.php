@@ -39,6 +39,16 @@ class FroalaEditorFieldType extends BaseFieldType
     }
 
     /**
+     * @inheritDoc IFieldType::defineContentAttribute()
+     *
+     * @return mixed
+     */
+    public function defineContentAttribute()
+    {
+        return [AttributeType::String, 'column' => ColumnType::Text];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function prepValue($value)

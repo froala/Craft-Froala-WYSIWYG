@@ -23,7 +23,15 @@ class FroalaEditorPlugin extends BasePlugin
      */
     public function getVersion()
     {
-        return '1.0.2';
+        return '1.0.3';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSchemaVersion()
+    {
+        return '1.0.0';
     }
 
     /**
@@ -58,6 +66,14 @@ class FroalaEditorPlugin extends BasePlugin
     public function getDeveloperUrl()
     {
         return 'http://bertoost.com';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDocumentationUrl()
+    {
+        return 'https://github.com/froala/Craft-Froala-WYSIWYG/blob/master/README.md';
     }
 
     /**
