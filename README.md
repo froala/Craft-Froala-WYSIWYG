@@ -1,6 +1,19 @@
 # Craft-FroalaEditor
 The implementation of the Froala Editor (license not included) for Craft CMS
 
+## Installation
+
+1. Download the zip at the top right
+1. Extract the files from the zip file
+1. Rename the folder to "froalaeditor"
+1. Copy the froalaeditor/ folder to your craft/plugins/ folder
+1. Login the control panel of your Craft installation and navigate to Settings > Plugins
+1. Hit "install" and the plugin will be installed.
+
+To enable the editor correctly, you should have a purchased a license on [www.froala.com](https://www.froala.com/wysiwyg-editor/pricing).
+
+Once you have a license, for your domain, you can enter the license key in the plugin settings.
+
 ## Features
 - Ability to set your license key in plugin settings
 - Ability to disable/enable editor plugins via settings
