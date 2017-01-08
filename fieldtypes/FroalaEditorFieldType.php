@@ -336,6 +336,7 @@ class FroalaEditorFieldType extends BaseFieldType
 
         craft()->templates->includeCssResource('froalaeditor/lib/v' . $froalaVersion . '/css/froala_editor.pkgd.min.css');
         craft()->templates->includeCssResource('froalaeditor/lib/v' . $froalaVersion . '/css/froala_style.min.css');
+        craft()->templates->includeCssResource('froalaeditor/css/theme.css');
 
         craft()->templates->includeJsResource('froalaeditor/lib/v' . $froalaVersion . '/js/froala_editor.pkgd.min.js');
 
@@ -367,6 +368,7 @@ class FroalaEditorFieldType extends BaseFieldType
         // Activate editor
         craft()->templates->includeJs("$('#{$namespacedId}').froalaEditor({
             key: '" . $pluginSettings->getAttribute('licenseKey') . "'
+            , theme: 'craftcms'
             " . ((!empty($enabledPlugins) && $enabledPlugins != '*') ? ", pluginsEnabled: ['" . implode("','", $enabledPlugins) . "']" : "") . "
             , toolbarButtons: ['" . implode("','", $this->getToolbarButtons('lg', $enabledPlugins)) . "']
             , toolbarButtonsMD: ['" . implode("','", $this->getToolbarButtons('md', $enabledPlugins)) . "']

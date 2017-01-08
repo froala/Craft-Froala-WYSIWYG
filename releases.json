@@ -1,5 +1,12 @@
 [
   {
+    "version": "1.0.4",
+    "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/master.zip",
+    "date": "2017-01-02T11:00:00+01:00",
+    "notes": [
+      "[Added] Custom theme to make editr in style of Craft CMS."
+    ]
+  },{
     "version": "1.0.3",
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/master.zip",
     "date": "2017-01-02T11:00:00+01:00",
