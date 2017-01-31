@@ -36,7 +36,7 @@ class FroalaEditorPlugin extends BasePlugin
 
     /**
      * Returns the version of the used Froala Editor
-     * 
+     *
      * @return string
      */
     public function getFroalaVersion()
@@ -120,6 +120,8 @@ class FroalaEditorPlugin extends BasePlugin
     {
         return array(
             'licenseKey' => array(AttributeType::String),
+            'customCssFile' => array(AttributeType::String),
+            'customCssClasses' => array(AttributeType::String),
             'enabledPlugins' => array(AttributeType::Mixed),
         );
     }
@@ -134,18 +136,18 @@ class FroalaEditorPlugin extends BasePlugin
         $pluginDir .= implode(DIRECTORY_SEPARATOR, array(
             'resources', 'lib', 'v' . $this->getFroalaVersion(), 'js', 'plugins'
         )) . DIRECTORY_SEPARATOR;
-        
+
         $plugins = array();
         foreach (glob($pluginDir . '*.min.js') as $pluginFile) {
             $fileName = basename($pluginFile);
             $pluginName = str_replace('.min.js', '', $fileName);
-            
+
             $pluginLabel = str_replace('_', ' ', $pluginName);
             $pluginLabel = ucwords($pluginLabel);
-            
+
             $plugins[$pluginName] = $pluginLabel;
         }
-        
+
         return $plugins;
     }
 

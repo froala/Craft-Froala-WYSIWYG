@@ -76,9 +76,13 @@ class FroalaEditorFieldType extends BaseFieldType
         }
 
         return craft()->templates->render('froalaeditor/fieldtype/settings', [
-            'settings'      => $this->getSettings(),
-            'sourceOptions' => $sourceOptions,
-            'editorPlugins' => $this->getEditorPlugins(),
+            'settings'       => $this->getSettings(),
+            'pluginSettings' => [
+                'customCssFile'    => $this->getPlugin()->getSettings()->getAttribute('customCssFile'),
+                'customCssClasses' => $this->getPlugin()->getSettings()->getAttribute('customCssClasses'),
+            ],
+            'sourceOptions'  => $sourceOptions,
+            'editorPlugins'  => $this->getEditorPlugins(),
         ]);
     }
 
@@ -92,6 +96,8 @@ class FroalaEditorFieldType extends BaseFieldType
             'assetsImagesSubPath' => [AttributeType::String],
             'assetsFilesSource'   => [AttributeType::Number, 'min' => 0],
             'assetsFilesSubPath'  => [AttributeType::String],
+            'customCssFile'       => [AttributeType::String],
+            'customCssClasses'    => [AttributeType::String],
             'enabledPlugins'      => [AttributeType::Mixed],
         ];
     }
@@ -318,13 +324,6 @@ class FroalaEditorFieldType extends BaseFieldType
      */
     private function getInputHtmlJavascript($id, BaseModel $pluginSettings, BaseModel $fieldSettings)
     {
-        // Figure out the enabled plugins
-        $enabledPlugins = $pluginSettings->getAttribute('enabledPlugins');
-        $fieldEnabledPlugins = $fieldSettings->getAttribute('enabledPlugins');
-        if (!empty($fieldEnabledPlugins) && $fieldEnabledPlugins != '*') {
-            $enabledPlugins = $fieldEnabledPlugins;
-        }
-
         // Figure out what that ID is going to look like once it has been namespaced
         $namespacedId = craft()->templates->namespaceInputId($id);
 
@@ -365,14 +364,18 @@ class FroalaEditorFieldType extends BaseFieldType
             craft()->templates->includeJs("var _froalaEditorTransforms = " . JsonHelper::encode($transforms) . ";");
         }
 
-        if (!empty($enabledPlugins) && $enabledPlugins != '*' && is_array($enabledPlugins)) {
-            foreach ($enabledPlugins as $i => $pluginName) {
-                // make plugin name lower-camelcase
-                $pluginName = explode('_', $pluginName);
-                $pluginName = implode('', array_map('ucfirst', $pluginName));
-                $enabledPlugins[$i] = lcfirst($pluginName);
-            }
+        // Include a custom css files (per field or plugin-wide)
+        $customCssFile = $fieldSettings->getAttribute('customCssFile');
+        if (empty($customCssFile)) {
+            $customCssFile = $pluginSettings->getAttribute('customCssFile');
         }
+
+        if (!empty($customCssFile)) {
+            craft()->templates->includeCssFile('/' . $customCssFile);
+        }
+
+        $enabledPlugins = $this->getEditorEnabledPlugins($pluginSettings, $fieldSettings);
+        $paragraphStyles = $this->getEditorParagraphStyles($pluginSettings, $fieldSettings);
 
         // Activate editor
         craft()->templates->includeJs("$('#{$namespacedId}').froalaEditor({
@@ -384,6 +387,7 @@ class FroalaEditorFieldType extends BaseFieldType
             , toolbarButtonsSM: ['" . implode("','", $this->getToolbarButtons('sm', $enabledPlugins)) . "']
             , toolbarButtonsXS: ['" . implode("','", $this->getToolbarButtons('xs', $enabledPlugins)) . "']
             , quickInsertButtons: ['" . implode("','", $this->getToolbarButtons('quick', $enabledPlugins)) . "']
+            " . ((!empty($paragraphStyles)) ? ", paragraphStyles: { " . implode(', ', $paragraphStyles) . " }" : "") . "
         });");
     }
 
@@ -556,5 +560,66 @@ class FroalaEditorFieldType extends BaseFieldType
         }
 
         return $editorPlugins;
+    }
+
+    /**
+     * @param BaseModel $pluginSettings
+     * @param BaseModel $fieldSettings
+     * @return array
+     */
+    private function getEditorEnabledPlugins(BaseModel $pluginSettings, BaseModel $fieldSettings)
+    {
+        // Figure out the enabled plugins
+        $enabledPlugins = $pluginSettings->getAttribute('enabledPlugins');
+        $fieldEnabledPlugins = $fieldSettings->getAttribute('enabledPlugins');
+        if (!empty($fieldEnabledPlugins) && $fieldEnabledPlugins != '*') {
+            $enabledPlugins = $fieldEnabledPlugins;
+        }
+
+        if (!empty($enabledPlugins) && $enabledPlugins != '*' && is_array($enabledPlugins)) {
+
+            foreach ($enabledPlugins as $i => $pluginName) {
+                // make plugin name lower-camelcase
+                $pluginName = explode('_', $pluginName);
+                $pluginName = implode('', array_map('ucfirst', $pluginName));
+                $enabledPlugins[$i] = lcfirst($pluginName);
+            }
+        }
+
+        return $enabledPlugins;
+    }
+
+    /**
+     * @param BaseModel $pluginSettings
+     * @param BaseModel $fieldSettings
+     * @return array
+     */
+    public function getEditorParagraphStyles(BaseModel $pluginSettings, BaseModel $fieldSettings)
+    {
+        // Figure out custom paragraph styles
+        $paragraphStyles = [];
+
+        $customCssClasses = $fieldSettings->getAttribute('customCssClasses');
+        if (empty($customCssClasses)) {
+            $customCssClasses = $pluginSettings->getAttribute('customCssClasses');
+        }
+
+        if (!empty($customCssClasses)) {
+
+            $customCssClasses = explode(PHP_EOL, $customCssClasses);
+            foreach ($customCssClasses as $customCssClass) {
+
+                $customCssClass = trim($customCssClass);
+
+                if (stristr($customCssClass, ':') !== false) {
+                    list($className, $displayName) = explode(':', $customCssClass);
+                    $paragraphStyles[] = '"' . trim($className) . '": "' . trim($displayName) . '"';
+                } else {
+                    $paragraphStyles[] = '"' . $customCssClass . '": "' . $customCssClass . '"'; // to avoid errors in editor
+                }
+            }
+        }
+
+        return $paragraphStyles;
     }
 }

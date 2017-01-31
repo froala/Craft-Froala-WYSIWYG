@@ -44,6 +44,28 @@
 
 <hr>
 
+{{ forms.textField({
+    id: 'customCssFile',
+    name: 'customCssFile',
+    label: 'Custom CSS File Path'|t,
+    value: settings.customCssFile,
+    warning: (pluginSettings.customCssFile is not empty ? "This will overrule the plugin-wide Custom CSS File path ({path})."|t({ path: pluginSettings.customCssFile })),
+    instructions: 'Include a custom style file for the editor to display content in your style. This file path should be relative from your site\'s document root.'|t
+}) }}
+
+{{ forms.textareaField({
+    id: 'customCssClasses',
+    name: 'customCssClasses',
+    label: 'Custom CSS Classes'|t,
+    value: settings.customCssClasses,
+    rows: 3,
+    class: 'nicetext',
+    warning: (pluginSettings.customCssClasses is not empty ? "This will overrule the plugin-wide Custom CSS classes."|t),
+    instructions: 'Add custom Paragraph Style classes. Enter each on one line. You can format each line like: <code>class-name: CMS display name</code>.'|t
+}) }}
+
+<hr>
+
 {{ forms.checkboxSelectField({
     label: 'Enabled Plugins'|t,
     instructions: 'Enable or disable plugins to use for the editor.'|t,
