@@ -5,6 +5,7 @@
     "date": "2017-01-31T08:00:00+01:00",
     "notes": [
       "[Fixed] Enabled plugins passed as lower camelcase names instead of underscored.",
+      "[Improved] Updated Froala Editor from v2.4.0 to v2.4.1.",
       "[Added] Support for custom CSS classes and stylesheet file (plugin-wide and per field setting).",
       "[Added] Custom theme to make editr in style of Craft CMS."
     ]
