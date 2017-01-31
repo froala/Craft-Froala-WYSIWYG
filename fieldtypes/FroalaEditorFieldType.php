@@ -365,6 +365,15 @@ class FroalaEditorFieldType extends BaseFieldType
             craft()->templates->includeJs("var _froalaEditorTransforms = " . JsonHelper::encode($transforms) . ";");
         }
 
+        if (!empty($enabledPlugins) && $enabledPlugins != '*' && is_array($enabledPlugins)) {
+            foreach ($enabledPlugins as $i => $pluginName) {
+                // make plugin name lower-camelcase
+                $pluginName = explode('_', $pluginName);
+                $pluginName = implode('', array_map('ucfirst', $pluginName));
+                $enabledPlugins[$i] = lcfirst($pluginName);
+            }
+        }
+
         // Activate editor
         craft()->templates->includeJs("$('#{$namespacedId}').froalaEditor({
             key: '" . $pluginSettings->getAttribute('licenseKey') . "'

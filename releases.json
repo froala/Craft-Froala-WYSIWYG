@@ -2,8 +2,9 @@
   {
     "version": "1.0.4",
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/master.zip",
-    "date": "2017-01-02T11:00:00+01:00",
+    "date": "2017-01-31T08:00:00+01:00",
     "notes": [
+      "[Fixed] Enabled plugins passed as lower camelcase names instead of underscored.",
       "[Added] Custom theme to make editr in style of Craft CMS."
     ]
   },{
