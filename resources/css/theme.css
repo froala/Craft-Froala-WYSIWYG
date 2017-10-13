@@ -567,6 +567,10 @@
   bottom: 0;
   right: 0;
 }
+.craftcms-theme .fr-view ul {
+  list-style: inherit;
+  padding-left: 15px;
+}
 .craftcms-theme .fr-view strong {
   font-weight: 700;
 }

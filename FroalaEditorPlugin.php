@@ -23,7 +23,7 @@ class FroalaEditorPlugin extends BasePlugin
      */
     public function getVersion()
     {
-        return '1.0.4';
+        return '2.7.0';
     }
 
     /**
@@ -32,16 +32,6 @@ class FroalaEditorPlugin extends BasePlugin
     public function getSchemaVersion()
     {
         return '1.0.0';
-    }
-
-    /**
-     * Returns the version of the used Froala Editor
-     *
-     * @return string
-     */
-    public function getFroalaVersion()
-    {
-        return '2.4.1';
     }
 
     /**
@@ -134,7 +124,7 @@ class FroalaEditorPlugin extends BasePlugin
     {
         $pluginDir = __DIR__ . DIRECTORY_SEPARATOR;
         $pluginDir .= implode(DIRECTORY_SEPARATOR, array(
-            'resources', 'lib', 'v' . $this->getFroalaVersion(), 'js', 'plugins'
+            'resources', 'lib', 'v' . $this->getVersion(), 'js', 'plugins'
         )) . DIRECTORY_SEPARATOR;
 
         $plugins = array();

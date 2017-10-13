@@ -328,7 +328,7 @@ class FroalaEditorFieldType extends BaseFieldType
         $namespacedId = craft()->templates->namespaceInputId($id);
 
         // Get the used Froala Version
-        $froalaVersion = $this->getPlugin()->getFroalaVersion();
+        $froalaVersion = $this->getPlugin()->getVersion();
 
         // Include our assets
         craft()->templates->includeCssFile('//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css');
@@ -406,33 +406,35 @@ class FroalaEditorFieldType extends BaseFieldType
             'strikeThrough',
             'subscript',
             'superscript',
+            '|',
+            'undo',
+            'redo',
+            '|',
             'fontFamily',
             'fontSize',
-            '|',
             'color',
-            'emoticons',
             'inlineStyle',
             'paragraphStyle',
-            '|',
             'paragraphFormat',
+            '|',
             'align',
             'formatOL',
             'formatUL',
             'outdent',
             'indent',
             'quote',
-            'insertHR',
             '-',
             'insertLink',
             'insertImage',
             'insertVideo',
             'insertFile',
             'insertTable',
-            'undo',
-            'redo',
-            'clearFormatting',
+            '|',
             'selectAll',
-            'html'
+            'clearFormatting',
+            '|',
+            'print',
+            'spellChecker',
         ];
 
         switch ($size) {
