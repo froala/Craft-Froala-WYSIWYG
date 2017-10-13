@@ -110,6 +110,7 @@ class FroalaEditorPlugin extends BasePlugin
     {
         return array(
             'licenseKey' => array(AttributeType::String),
+            'customCssType' => array(AttributeType::String),
             'customCssFile' => array(AttributeType::String),
             'customCssClasses' => array(AttributeType::String),
             'enabledPlugins' => array(AttributeType::Mixed),

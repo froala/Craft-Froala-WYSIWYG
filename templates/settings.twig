@@ -1,4 +1,5 @@
 {% import "_includes/forms" as forms %}
+{% import "froalaeditor/macros" as macros %}
 
 {{ forms.textField({
     id: 'licenseKey',
@@ -12,13 +13,11 @@
 
 <hr>
 
-{{ forms.textField({
-    id: 'customCssFile',
-    name: 'customCssFile',
-    label: 'Custom CSS File Path'|t,
-    value: settings.customCssFile,
-    instructions: 'Include a custom style file for the editor to display content in your style. This file path should be relative from your site\'s document root.'|t
-}) }}
+{{ forms.field({
+    label: 'Custom CSS File'|t,
+    instructions: 'Include a custom style file for the editor to display content in your style. This file path could be a plugin resource or should be a relative to your site\'s document root path.'|t,
+    errors: settings.getErrors('customCssFile')
+}, macros.customCssInput('customCss', settings)) }}
 
 {{ forms.textareaField({
     id: 'customCssClasses',

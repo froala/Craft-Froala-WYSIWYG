@@ -20,6 +20,7 @@ Once you have a license, for your domain, you can enter the license key in the p
 - Creating fields defined as Richtext Froala Editor
 - Ability to change enabled plugins per field (inherit from generic plugin settings)
 - Configuration of Craft Asset sources for image/file uploads
+- Configuration of custom CSS file to be loaded relative from the site or from a plugin resource
 
 ## License
 Froala Editor is a beautiful WYSIWYG editor for editing web pages.

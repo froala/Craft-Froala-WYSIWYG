@@ -96,6 +96,7 @@ class FroalaEditorFieldType extends BaseFieldType
             'assetsImagesSubPath' => [AttributeType::String],
             'assetsFilesSource'   => [AttributeType::Number, 'min' => 0],
             'assetsFilesSubPath'  => [AttributeType::String],
+            'customCssType'       => [AttributeType::String],
             'customCssFile'       => [AttributeType::String],
             'customCssClasses'    => [AttributeType::String],
             'enabledPlugins'      => [AttributeType::Mixed],
@@ -365,13 +366,22 @@ class FroalaEditorFieldType extends BaseFieldType
         }
 
         // Include a custom css files (per field or plugin-wide)
+        $customCssType = $fieldSettings->getAttribute('customCssType');
         $customCssFile = $fieldSettings->getAttribute('customCssFile');
         if (empty($customCssFile)) {
+            $customCssType = $pluginSettings->getAttribute('customCssType');
             $customCssFile = $pluginSettings->getAttribute('customCssFile');
         }
 
         if (!empty($customCssFile)) {
-            craft()->templates->includeCssFile('/' . $customCssFile);
+
+            // when not empty css type, it is a plugin resource
+            if (!empty($customCssType)) {
+                craft()->templates->includeCssResource($customCssType . '/' . $customCssFile);
+            } else {
+                // strip left slash, to be sure
+                craft()->templates->includeCssFile('/' . ltrim($customCssFile, '/'));
+            }
         }
 
         $enabledPlugins = $this->getEditorEnabledPlugins($pluginSettings, $fieldSettings);
