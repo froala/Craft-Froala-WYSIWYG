@@ -1,31 +1,5 @@
 {% import "_includes/forms" as forms %}
-
-{% macro uploadLocationInput(name, settings, sourceOptions) %}
-    {% from "_includes/forms" import select, text %}
-    <table class="inputs fullwidth">
-        <tr>
-            <td class="thin">
-                {{ select({
-                    id: name ~ 'Source',
-                    name: name ~ 'Source',
-                    options: sourceOptions,
-                    value: settings[name ~ 'Source'],
-                }) }}
-            </td>
-            <td>
-                {{ text({
-                    id: name ~ 'SubPath',
-                    class: 'ltr',
-                    name: name ~ 'SubPath',
-                    value: settings[name ~ 'SubPath'],
-                    placeholder: "path/to/subfolder"|t
-                }) }}
-            </td>
-        </tr>
-    </table>
-{% endmacro %}
-
-{% from _self import uploadLocationInput %}
+{% import "froalaeditor/macros" as macros %}
 
 {% set uploadInstructions = 'Where should files be uploaded when they are dragged directly onto the field, or uploaded from the front end?' %}
 {% set uploadInstructions = uploadInstructions ~ ' Note that the subfolder path can contain variables like <code>{slug}</code> or <code>{author.username}</code>.' %}
@@ -34,13 +8,32 @@
     label: 'Images Location'|t,
     instructions: uploadInstructions|t,
     errors: settings.getErrors('assetsImagesSubPath')
-}, uploadLocationInput('assetsImages', settings, sourceOptions)) }}
+}, macros.uploadLocationInput('assetsImages', settings, sourceOptions)) }}
 
 {{ forms.field({
     label: 'Files Location'|t,
     instructions: uploadInstructions|t,
     errors: settings.getErrors('assetsFilesSubPath')
-}, uploadLocationInput('assetsFiles', settings, sourceOptions)) }}
+}, macros.uploadLocationInput('assetsFiles', settings, sourceOptions)) }}
+
+<hr>
+
+{{ forms.field({
+    label: 'Custom CSS File'|t,
+    instructions: 'Include a custom style file for the editor to display content in your style. This file path could be a plugin resource or should be a relative to your site\'s document root path.'|t,
+    errors: settings.getErrors('customCssFile')
+}, macros.customCssInput('customCss', settings)) }}
+
+{{ forms.textareaField({
+    id: 'customCssClasses',
+    name: 'customCssClasses',
+    label: 'Custom CSS Classes'|t,
+    value: settings.customCssClasses,
+    rows: 3,
+    class: 'nicetext',
+    warning: (pluginSettings.customCssClasses is not empty ? "This will overrule the plugin-wide Custom CSS classes."|t),
+    instructions: 'Add custom Paragraph Style classes. Enter each on one line. You can format each line like: <code>class-name: CMS display name</code>.'|t
+}) }}
 
 <hr>
 

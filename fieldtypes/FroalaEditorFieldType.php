@@ -76,9 +76,13 @@ class FroalaEditorFieldType extends BaseFieldType
         }
 
         return craft()->templates->render('froalaeditor/fieldtype/settings', [
-            'settings'      => $this->getSettings(),
-            'sourceOptions' => $sourceOptions,
-            'editorPlugins' => $this->getEditorPlugins(),
+            'settings'       => $this->getSettings(),
+            'pluginSettings' => [
+                'customCssFile'    => $this->getPlugin()->getSettings()->getAttribute('customCssFile'),
+                'customCssClasses' => $this->getPlugin()->getSettings()->getAttribute('customCssClasses'),
+            ],
+            'sourceOptions'  => $sourceOptions,
+            'editorPlugins'  => $this->getEditorPlugins(),
         ]);
     }
 
@@ -92,6 +96,9 @@ class FroalaEditorFieldType extends BaseFieldType
             'assetsImagesSubPath' => [AttributeType::String],
             'assetsFilesSource'   => [AttributeType::Number, 'min' => 0],
             'assetsFilesSubPath'  => [AttributeType::String],
+            'customCssType'       => [AttributeType::String],
+            'customCssFile'       => [AttributeType::String],
+            'customCssClasses'    => [AttributeType::String],
             'enabledPlugins'      => [AttributeType::Mixed],
         ];
     }
@@ -318,24 +325,18 @@ class FroalaEditorFieldType extends BaseFieldType
      */
     private function getInputHtmlJavascript($id, BaseModel $pluginSettings, BaseModel $fieldSettings)
     {
-        // Figure out the enabled plugins
-        $enabledPlugins = $pluginSettings->getAttribute('enabledPlugins');
-        $fieldEnabledPlugins = $fieldSettings->getAttribute('enabledPlugins');
-        if (!empty($fieldEnabledPlugins) && $fieldEnabledPlugins != '*') {
-            $enabledPlugins = $fieldEnabledPlugins;
-        }
-
         // Figure out what that ID is going to look like once it has been namespaced
         $namespacedId = craft()->templates->namespaceInputId($id);
 
         // Get the used Froala Version
-        $froalaVersion = $this->getPlugin()->getFroalaVersion();
+        $froalaVersion = $this->getPlugin()->getVersion();
 
         // Include our assets
         craft()->templates->includeCssFile('//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css');
 
         craft()->templates->includeCssResource('froalaeditor/lib/v' . $froalaVersion . '/css/froala_editor.pkgd.min.css');
         craft()->templates->includeCssResource('froalaeditor/lib/v' . $froalaVersion . '/css/froala_style.min.css');
+        craft()->templates->includeCssResource('froalaeditor/css/theme.css');
 
         craft()->templates->includeJsResource('froalaeditor/lib/v' . $froalaVersion . '/js/froala_editor.pkgd.min.js');
 
@@ -364,15 +365,39 @@ class FroalaEditorFieldType extends BaseFieldType
             craft()->templates->includeJs("var _froalaEditorTransforms = " . JsonHelper::encode($transforms) . ";");
         }
 
+        // Include a custom css files (per field or plugin-wide)
+        $customCssType = $fieldSettings->getAttribute('customCssType');
+        $customCssFile = $fieldSettings->getAttribute('customCssFile');
+        if (empty($customCssFile)) {
+            $customCssType = $pluginSettings->getAttribute('customCssType');
+            $customCssFile = $pluginSettings->getAttribute('customCssFile');
+        }
+
+        if (!empty($customCssFile)) {
+
+            // when not empty css type, it is a plugin resource
+            if (!empty($customCssType)) {
+                craft()->templates->includeCssResource($customCssType . '/' . $customCssFile);
+            } else {
+                // strip left slash, to be sure
+                craft()->templates->includeCssFile('/' . ltrim($customCssFile, '/'));
+            }
+        }
+
+        $enabledPlugins = $this->getEditorEnabledPlugins($pluginSettings, $fieldSettings);
+        $paragraphStyles = $this->getEditorParagraphStyles($pluginSettings, $fieldSettings);
+
         // Activate editor
         craft()->templates->includeJs("$('#{$namespacedId}').froalaEditor({
             key: '" . $pluginSettings->getAttribute('licenseKey') . "'
+            , theme: 'craftcms'
             " . ((!empty($enabledPlugins) && $enabledPlugins != '*') ? ", pluginsEnabled: ['" . implode("','", $enabledPlugins) . "']" : "") . "
             , toolbarButtons: ['" . implode("','", $this->getToolbarButtons('lg', $enabledPlugins)) . "']
             , toolbarButtonsMD: ['" . implode("','", $this->getToolbarButtons('md', $enabledPlugins)) . "']
             , toolbarButtonsSM: ['" . implode("','", $this->getToolbarButtons('sm', $enabledPlugins)) . "']
             , toolbarButtonsXS: ['" . implode("','", $this->getToolbarButtons('xs', $enabledPlugins)) . "']
             , quickInsertButtons: ['" . implode("','", $this->getToolbarButtons('quick', $enabledPlugins)) . "']
+            " . ((!empty($paragraphStyles)) ? ", paragraphStyles: { " . implode(', ', $paragraphStyles) . " }" : "") . "
         });");
     }
 
@@ -391,33 +416,35 @@ class FroalaEditorFieldType extends BaseFieldType
             'strikeThrough',
             'subscript',
             'superscript',
+            '|',
+            'undo',
+            'redo',
+            '|',
             'fontFamily',
             'fontSize',
-            '|',
             'color',
-            'emoticons',
             'inlineStyle',
             'paragraphStyle',
-            '|',
             'paragraphFormat',
+            '|',
             'align',
             'formatOL',
             'formatUL',
             'outdent',
             'indent',
             'quote',
-            'insertHR',
             '-',
             'insertLink',
             'insertImage',
             'insertVideo',
             'insertFile',
             'insertTable',
-            'undo',
-            'redo',
-            'clearFormatting',
+            '|',
             'selectAll',
-            'html'
+            'clearFormatting',
+            '|',
+            'print',
+            'spellChecker',
         ];
 
         switch ($size) {
@@ -545,5 +572,66 @@ class FroalaEditorFieldType extends BaseFieldType
         }
 
         return $editorPlugins;
+    }
+
+    /**
+     * @param BaseModel $pluginSettings
+     * @param BaseModel $fieldSettings
+     * @return array
+     */
+    private function getEditorEnabledPlugins(BaseModel $pluginSettings, BaseModel $fieldSettings)
+    {
+        // Figure out the enabled plugins
+        $enabledPlugins = $pluginSettings->getAttribute('enabledPlugins');
+        $fieldEnabledPlugins = $fieldSettings->getAttribute('enabledPlugins');
+        if (!empty($fieldEnabledPlugins) && $fieldEnabledPlugins != '*') {
+            $enabledPlugins = $fieldEnabledPlugins;
+        }
+
+        if (!empty($enabledPlugins) && $enabledPlugins != '*' && is_array($enabledPlugins)) {
+
+            foreach ($enabledPlugins as $i => $pluginName) {
+                // make plugin name lower-camelcase
+                $pluginName = explode('_', $pluginName);
+                $pluginName = implode('', array_map('ucfirst', $pluginName));
+                $enabledPlugins[$i] = lcfirst($pluginName);
+            }
+        }
+
+        return $enabledPlugins;
+    }
+
+    /**
+     * @param BaseModel $pluginSettings
+     * @param BaseModel $fieldSettings
+     * @return array
+     */
+    public function getEditorParagraphStyles(BaseModel $pluginSettings, BaseModel $fieldSettings)
+    {
+        // Figure out custom paragraph styles
+        $paragraphStyles = [];
+
+        $customCssClasses = $fieldSettings->getAttribute('customCssClasses');
+        if (empty($customCssClasses)) {
+            $customCssClasses = $pluginSettings->getAttribute('customCssClasses');
+        }
+
+        if (!empty($customCssClasses)) {
+
+            $customCssClasses = explode(PHP_EOL, $customCssClasses);
+            foreach ($customCssClasses as $customCssClass) {
+
+                $customCssClass = trim($customCssClass);
+
+                if (stristr($customCssClass, ':') !== false) {
+                    list($className, $displayName) = explode(':', $customCssClass);
+                    $paragraphStyles[] = '"' . trim($className) . '": "' . trim($displayName) . '"';
+                } else {
+                    $paragraphStyles[] = '"' . $customCssClass . '": "' . $customCssClass . '"'; // to avoid errors in editor
+                }
+            }
+        }
+
+        return $paragraphStyles;
     }
 }

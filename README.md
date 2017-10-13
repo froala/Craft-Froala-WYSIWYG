@@ -3,6 +3,24 @@ The implementation of the Froala Editor (license not included) for Craft CMS
 
 ## Installation
 
+Chose one of the options to install 
+
+### Composer installation
+
+It is possible to install the plugin for Craft 2. Althouhg Craft is not yet working with composer. It 
+uses the composer installers package to move the package to craft/plugins/ folder.
+
+```
+composer require froala/craft-froala-editor
+```
+
+After requiring the plugin package, it is moved to `craft/plugins/`. 
+You still need to go to the Craft Plugins page to install and enable it.
+
+__Note:__ it doesn't use Froala Editor sources from composer yet. This will be there for the Craft 3 version of course.
+
+### Manual installation
+
 1. Download the zip at the top right
 1. Extract the files from the zip file
 1. Rename the folder to "froalaeditor"
@@ -20,6 +38,7 @@ Once you have a license, for your domain, you can enter the license key in the p
 - Creating fields defined as Richtext Froala Editor
 - Ability to change enabled plugins per field (inherit from generic plugin settings)
 - Configuration of Craft Asset sources for image/file uploads
+- Configuration of custom CSS file to be loaded relative from the site or from a plugin resource
 
 ## License
 Froala Editor is a beautiful WYSIWYG editor for editing web pages.

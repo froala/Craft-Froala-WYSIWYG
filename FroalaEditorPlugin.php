@@ -23,7 +23,7 @@ class FroalaEditorPlugin extends BasePlugin
      */
     public function getVersion()
     {
-        return '1.0.3';
+        return '2.7.0';
     }
 
     /**
@@ -32,16 +32,6 @@ class FroalaEditorPlugin extends BasePlugin
     public function getSchemaVersion()
     {
         return '1.0.0';
-    }
-
-    /**
-     * Returns the version of the used Froala Editor
-     * 
-     * @return string
-     */
-    public function getFroalaVersion()
-    {
-        return '2.4.0';
     }
 
     /**
@@ -120,6 +110,9 @@ class FroalaEditorPlugin extends BasePlugin
     {
         return array(
             'licenseKey' => array(AttributeType::String),
+            'customCssType' => array(AttributeType::String),
+            'customCssFile' => array(AttributeType::String),
+            'customCssClasses' => array(AttributeType::String),
             'enabledPlugins' => array(AttributeType::Mixed),
         );
     }
@@ -132,20 +125,20 @@ class FroalaEditorPlugin extends BasePlugin
     {
         $pluginDir = __DIR__ . DIRECTORY_SEPARATOR;
         $pluginDir .= implode(DIRECTORY_SEPARATOR, array(
-            'resources', 'lib', 'v' . $this->getFroalaVersion(), 'js', 'plugins'
+            'resources', 'lib', 'v' . $this->getVersion(), 'js', 'plugins'
         )) . DIRECTORY_SEPARATOR;
-        
+
         $plugins = array();
         foreach (glob($pluginDir . '*.min.js') as $pluginFile) {
             $fileName = basename($pluginFile);
             $pluginName = str_replace('.min.js', '', $fileName);
-            
+
             $pluginLabel = str_replace('_', ' ', $pluginName);
             $pluginLabel = ucwords($pluginLabel);
-            
+
             $plugins[$pluginName] = $pluginLabel;
         }
-        
+
         return $plugins;
     }
 

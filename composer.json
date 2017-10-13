@@ -1,0 +1,14 @@
+{
+  "name": "froala/craft-froala-editor",
+  "description": "Froala WYSIWYG editor for Craft CMS",
+  "authors": [
+    {
+      "name": "Bert Oost",
+      "email": "hello@bertoost.com"
+    }
+  ],
+  "type": "craft-plugin",
+  "require": {
+    "composer/installers": "~1.0"
+  }
+}

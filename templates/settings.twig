@@ -1,4 +1,5 @@
 {% import "_includes/forms" as forms %}
+{% import "froalaeditor/macros" as macros %}
 
 {{ forms.textField({
     id: 'licenseKey',
@@ -8,6 +9,24 @@
     first: true,
     autofocus: true,
     instructions: 'The license key for Froala editor usage on the current domain.'|t
+}) }}
+
+<hr>
+
+{{ forms.field({
+    label: 'Custom CSS File'|t,
+    instructions: 'Include a custom style file for the editor to display content in your style. This file path could be a plugin resource or should be a relative to your site\'s document root path.'|t,
+    errors: settings.getErrors('customCssFile')
+}, macros.customCssInput('customCss', settings)) }}
+
+{{ forms.textareaField({
+    id: 'customCssClasses',
+    name: 'customCssClasses',
+    label: 'Custom CSS Classes'|t,
+    value: settings.customCssClasses,
+    rows: 3,
+    class: 'nicetext',
+    instructions: 'Add custom Paragraph Style classes. Enter each on one line. You can format each line like: <code>class-name: CMS display name</code>.'|t
 }) }}
 
 <hr>
