@@ -1,4 +1,5 @@
-# Craft-FroalaEditor
+# Froala WYSIWYG editor for Craft CMS (v2)
+
 The implementation of the Froala Editor (license not included) for Craft CMS
 
 ## Installation
@@ -49,10 +50,10 @@ Once purchased a license, you can enter the license key in your Craft CMS settin
 
 ### Screenshots
 
-![Plugin Install](http://plugins.bertoost.com/craft/froalaEditor/plugins-section.png "Plugins Section")
+![Plugin Install](resources/screenshots/plugins-section.png "Plugins Section")
 
-![Plugin Settings](http://plugins.bertoost.com/craft/froalaEditor/plugin-settings.png "Plugins Settings")
+![Plugin Settings](resources/screenshots/plugin-settings.png "Plugins Settings")
 
-![Plugin Field](http://plugins.bertoost.com/craft/froalaEditor/plugin-field-settings.png "Plugins Field Settings")
+![Plugin Field](resources/screenshots/plugin-field-settings.png "Plugins Field Settings")
 
-![Entry Body Field](http://plugins.bertoost.com/craft/froalaEditor/default-entry-body.png "Default Entry Body")
+![Entry Body Field](resources/screenshots/default-entry-body.png "Default Entry Body")
