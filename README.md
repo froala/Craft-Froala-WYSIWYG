@@ -8,7 +8,7 @@ Chose one of the options to install
 
 ### Composer installation
 
-It is possible to install the plugin for Craft 2. Althouhg Craft is not yet working with composer. It 
+It is possible to install the plugin for Craft 2. Craft is not yet working with composer. It 
 uses the composer installers package to move the package to craft/plugins/ folder.
 
 ```
@@ -44,7 +44,7 @@ Once you have a license, for your domain, you can enter the license key in the p
 ## License
 Froala Editor is a beautiful WYSIWYG editor for editing web pages.
 
-Therefor the editor needs a licese. You can by one at [their website](https://www.froala.com/wysiwyg-editor/pricing).
+Therefor the editor needs a license. You can by one at [their website](https://www.froala.com/wysiwyg-editor/pricing).
 
 Once purchased a license, you can enter the license key in your Craft CMS settings page.
 
