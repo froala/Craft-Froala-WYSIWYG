@@ -2,6 +2,8 @@
 
 The implementation of the Froala Editor (license not included) for Craft CMS
 
+__[Check the Craft CMS v3 version here](https://github.com/froala/Craft-3-Froala-WYSIWYG/blob/master/README.md)__
+
 ## Installation
 
 Chose one of the options to install 
