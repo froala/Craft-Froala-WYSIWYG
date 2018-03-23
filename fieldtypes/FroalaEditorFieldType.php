@@ -387,8 +387,12 @@ class FroalaEditorFieldType extends BaseFieldType
         $enabledPlugins = $this->getEditorEnabledPlugins($pluginSettings, $fieldSettings);
         $paragraphStyles = $this->getEditorParagraphStyles($pluginSettings, $fieldSettings);
 
-        // Activate editor
-        craft()->templates->includeJs("$('#{$namespacedId}').froalaEditor({
+        $additionalSettings = craft()->config->get('froalaSettings', 'froalaeditor');
+		$additionalSettingsString = json_encode($additionalSettings, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+		$additionalSettingsString = substr($additionalSettingsString, 1, -1);
+		$additionalSettingsString = preg_replace('/"([a-zA-Z_]+[a-zA-Z0-9_]*)":/','$1:', $additionalSettingsString);
+
+        $editorConfiguration = "$('#{$namespacedId}').froalaEditor({
             key: '" . $pluginSettings->getAttribute('licenseKey') . "'
             , theme: 'craftcms'
             " . ((!empty($enabledPlugins) && $enabledPlugins != '*') ? ", pluginsEnabled: ['" . implode("','", $enabledPlugins) . "']" : "") . "
@@ -397,8 +401,12 @@ class FroalaEditorFieldType extends BaseFieldType
             , toolbarButtonsSM: ['" . implode("','", $this->getToolbarButtons('sm', $enabledPlugins)) . "']
             , toolbarButtonsXS: ['" . implode("','", $this->getToolbarButtons('xs', $enabledPlugins)) . "']
             , quickInsertButtons: ['" . implode("','", $this->getToolbarButtons('quick', $enabledPlugins)) . "']
+            " . ((!empty($additionalSettingsString)) ? ", " . $additionalSettingsString : "") ."
             " . ((!empty($paragraphStyles)) ? ", paragraphStyles: { " . implode(', ', $paragraphStyles) . " }" : "") . "
-        });");
+        });";
+
+        // Activate editor
+        craft()->templates->includeJs($editorConfiguration);
     }
 
     /**
