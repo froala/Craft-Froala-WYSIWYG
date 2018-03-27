@@ -3,7 +3,7 @@
  * Froala Editor for Craft
  *
  * @package froalaeditor
- * @author Bert Oost
+ * @author  Bert Oost
  */
 
 namespace Craft;
@@ -98,7 +98,7 @@ class FroalaEditorPlugin extends BasePlugin
     public function getSettingsHtml()
     {
         return craft()->templates->render('froalaeditor/settings', array(
-            'settings' => $this->getSettings(),
+            'settings'      => $this->getSettings(),
             'editorPlugins' => $this->getEditorPlugins(),
         ));
     }
@@ -109,11 +109,13 @@ class FroalaEditorPlugin extends BasePlugin
     protected function defineSettings()
     {
         return array(
-            'licenseKey' => array(AttributeType::String),
-            'customCssType' => array(AttributeType::String),
-            'customCssFile' => array(AttributeType::String),
+            'licenseKey'       => array(AttributeType::String),
+            'customCssType'    => array(AttributeType::String),
+            'customCssFile'    => array(AttributeType::String),
             'customCssClasses' => array(AttributeType::String),
-            'enabledPlugins' => array(AttributeType::Mixed),
+            'enabledPlugins'   => array(AttributeType::Mixed),
+            'purifyHtml'       => [AttributeType::Bool, 'default' => true],
+            'cleanupHtml'      => [AttributeType::Bool, 'default' => true],
         );
     }
 
@@ -125,8 +127,12 @@ class FroalaEditorPlugin extends BasePlugin
     {
         $pluginDir = __DIR__ . DIRECTORY_SEPARATOR;
         $pluginDir .= implode(DIRECTORY_SEPARATOR, array(
-            'resources', 'lib', 'v' . $this->getVersion(), 'js', 'plugins'
-        )) . DIRECTORY_SEPARATOR;
+                'resources',
+                'lib',
+                'v' . $this->getVersion(),
+                'js',
+                'plugins',
+            )) . DIRECTORY_SEPARATOR;
 
         $plugins = array();
         foreach (glob($pluginDir . '*.min.js') as $pluginFile) {
@@ -145,7 +151,7 @@ class FroalaEditorPlugin extends BasePlugin
     /**
      * @param string $msg
      * @param string $logLevel
-     * @param bool $force
+     * @param bool   $force
      * @return void
      */
     public static function log($msg, $logLevel = LogLevel::Info, $force = false)
