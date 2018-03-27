@@ -100,6 +100,9 @@ class FroalaEditorFieldType extends BaseFieldType
             'customCssFile'       => [AttributeType::String],
             'customCssClasses'    => [AttributeType::String],
             'enabledPlugins'      => [AttributeType::Mixed],
+            'purifyHtml'          => [AttributeType::Bool, 'default' => true],
+            'purifierConfig'      => [AttributeType::String],
+            'cleanupHtml'         => [AttributeType::Bool, 'default' => true],
         ];
     }
 
@@ -124,6 +127,23 @@ class FroalaEditorFieldType extends BaseFieldType
         $imageFolderId = $this->determineUploadImagesFolderId($fieldSettings);
         $filesFolderId = $this->determineUploadFilesFolderId($fieldSettings);
 
+        // Get raw input value
+        if ($value instanceof RichTextData) {
+            $value = $value->getRawContent();
+        }
+
+        if (strpos($value, '{') !== false) {
+            // Parse ref tags in URLs, while preserving the original tag values in the URL fragments
+            // e.g. {entry:id:url} => [entry-url]#entry:id:url
+            // Leave any other ref tags alone for the input, since they were probably manually added
+            $value = preg_replace_callback('/(href=|src=)([\'"])(\{(\w+\:\d+\:' . HandleValidator::$handlePattern . ')\})(#[^\'"#]+)?\2/', function ($matches) {
+                list (, $attr, $q, $refTag, $ref) = $matches;
+                $fragment = isset($matches[5]) ? $matches[5] : '';
+
+                return $attr . $q . craft()->elements->parseRefs($refTag) . $fragment . '#' . $ref . $q;
+            }, $value);
+        }
+
         // Return view
         $variables = [
             'id'      => $id,
@@ -138,12 +158,62 @@ class FroalaEditorFieldType extends BaseFieldType
         return craft()->templates->render('froalaeditor/fieldtype/input', $variables);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function prepValueFromPost($value)
+    {
+        // Temporary fix (hopefully) for a bug where some HTML will get submitted when the field is blank,
+        // if any text was typed into the field, and then deleted
+        if ($value == '<p><br></p>') {
+            $value = '';
+        }
+        if ($value) {
+            if ($this->getSettings()->purifyHtml) {
+                $purifier = new \CHtmlPurifier();
+                $purifier->setOptions($this->_getPurifierConfig());
+                $value = $purifier->purify($value);
+            }
+            if ($this->getSettings()->cleanupHtml) {
+                // Remove <span> and <font> tags
+                $value = preg_replace('/<(?:span|font)\b[^>]*>/', '', $value);
+                $value = preg_replace('/<\/(?:span|font)>/', '', $value);
+                // Remove inline styles
+                $value = preg_replace('/(<(?:h1|h2|h3|h4|h5|h6|p|div|blockquote|pre|strong|em|b|i|u|a)\b[^>]*)\s+style="[^"]*"/', '$1', $value);
+                // Remove empty tags
+                $value = preg_replace('/<(h1|h2|h3|h4|h5|h6|p|div|blockquote|pre|strong|em|a|b|i|u)\s*><\/\1>/', '', $value);
+            }
+        }
+        // Find any element URLs and swap them with ref tags
+        $value = preg_replace_callback('/(href=|src=)([\'"])[^\'"#]+?(#[^\'"#]+)?(?:#|%23)(\w+):(\d+)(:' . HandleValidator::$handlePattern . ')?\2/', function ($matches) {
+            // Create the ref tag, and make sure :url is in there
+            $refTag = '{' . $matches[4] . ':' . $matches[5] . (!empty($matches[6]) ? $matches[6] : ':url') . '}';
+            $hash = (!empty($matches[3]) ? $matches[3] : '');
+            if ($hash) {
+                // Make sure that the hash isn't actually part of the parsed URL
+                // (someone's Entry URL Format could be "#{slug}", etc.)
+                $url = craft()->elements->parseRefs($refTag);
+                if (mb_strpos($url, $hash) !== false) {
+                    $hash = '';
+                }
+            }
+
+            return $matches[1] . $matches[2] . $refTag . $hash . $matches[2];
+        }, $value);
+        // Encode any 4-byte UTF-8 characters.
+        $value = StringHelper::encodeMb4($value);
+
+        return $value;
+    }
+
     // Private Methods
     // =========================================================================
 
     /**
      * @param BaseModel $settings
      * @return string
+     * @throws InvalidSourceException
+     * @throws \Exception
      */
     private function determineUploadImagesFolderId($settings)
     {
@@ -156,6 +226,8 @@ class FroalaEditorFieldType extends BaseFieldType
     /**
      * @param BaseModel $settings
      * @return string
+     * @throws InvalidSourceException
+     * @throws \Exception
      */
     private function determineUploadFilesFolderId($settings)
     {
@@ -170,7 +242,8 @@ class FroalaEditorFieldType extends BaseFieldType
      * @param string $folderSubPath
      * @param bool   $createDynamicFolders
      * @return int
-     * @throws InvalidSubpathException
+     * @throws InvalidSourceException
+     * @throws \Exception
      */
     private function determineUploadFolderId($folderSourceId, $folderSubPath, $createDynamicFolders = true)
     {
@@ -190,7 +263,7 @@ class FroalaEditorFieldType extends BaseFieldType
 
                 $folder = craft()->assets->findFolder([
                     'parentId' => $userFolder->id,
-                    'name'     => $folderName
+                    'name'     => $folderName,
                 ]);
 
                 if ($folder) {
@@ -210,9 +283,9 @@ class FroalaEditorFieldType extends BaseFieldType
     }
 
     /**
-     * @param      $sourceId
-     * @param      $subPath
-     * @param bool $createDynamicFolders
+     * @param int    $sourceId
+     * @param string $subPath
+     * @param bool   $createDynamicFolders
      * @return int
      * @throws InvalidSourceException
      * @throws InvalidSubpathException
@@ -253,7 +326,7 @@ class FroalaEditorFieldType extends BaseFieldType
 
             $folder = craft()->assets->findFolder([
                 'sourceId' => $sourceId,
-                'path'     => $subPath . '/'
+                'path'     => $subPath . '/',
             ]);
 
             // Ensure that the folder exists
@@ -270,7 +343,7 @@ class FroalaEditorFieldType extends BaseFieldType
                 foreach ($segments as $segment) {
                     $folder = craft()->assets->findFolder([
                         'parentId' => $parentFolder->id,
-                        'name'     => $segment
+                        'name'     => $segment,
                     ]);
 
                     // Create it if it doesn't exist
@@ -304,7 +377,7 @@ class FroalaEditorFieldType extends BaseFieldType
                     'parentId' => $currentFolder->id,
                     'name'     => $folderName,
                     'sourceId' => $currentFolder->sourceId,
-                    'path'     => ($currentFolder->parentId ? $currentFolder->path . $folderName : $folderName) . '/'
+                    'path'     => ($currentFolder->parentId ? $currentFolder->path . $folderName : $folderName) . '/',
                 ]
             );
             $folderId = craft()->assets->storeFolder($newFolder);
@@ -473,7 +546,7 @@ class FroalaEditorFieldType extends BaseFieldType
                     'insertTable',
                     'undo',
                     'redo',
-                    'clearFormatting'
+                    'clearFormatting',
                 ];
                 break;
             case 'sm':
@@ -488,7 +561,7 @@ class FroalaEditorFieldType extends BaseFieldType
                     'insertImage',
                     'insertTable',
                     'undo',
-                    'redo'
+                    'redo',
                 ];
                 break;
             case 'xs':
@@ -499,7 +572,7 @@ class FroalaEditorFieldType extends BaseFieldType
                     'insertImage',
                     'insertFile',
                     'undo',
-                    'redo'
+                    'redo',
                 ];
                 break;
 
@@ -509,7 +582,7 @@ class FroalaEditorFieldType extends BaseFieldType
                     'ol',
                     'insertLink',
                     'insertImage',
-                    'insertFile'
+                    'insertFile',
                 ];
                 break;
         }
@@ -633,5 +706,25 @@ class FroalaEditorFieldType extends BaseFieldType
         }
 
         return $paragraphStyles;
+    }
+
+    /**
+     * Returns the HTML Purifier config used by this field.
+     *
+     * @return array
+     */
+    private function _getPurifierConfig()
+    {
+        $file = $this->getSettings()->purifierConfig;
+        $path = craft()->path->getConfigPath() . 'htmlpurifier/' . $file;
+        if (!$file || !IOHelper::fileExists($path)) {
+            return [
+                'Attr.AllowedFrameTargets' => ['_blank'],
+                'HTML.AllowedComments'     => ['pagebreak'],
+            ];
+        }
+        $json = IOHelper::getFileContents($path);
+
+        return JsonHelper::decode($json);
     }
 }
