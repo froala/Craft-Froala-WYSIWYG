@@ -4,6 +4,11 @@ The implementation of the Froala Editor (license not included) for Craft CMS
 
 __[Check the Craft CMS v3 version here](https://github.com/froala/Craft-3-Froala-WYSIWYG/)__
 
+## Known issue
+
+Currently we're facing issues regarding inserting links to selected text and images.
+The links are all added to the editor instead of added to the selected text or image.
+
 ## Installation
 
 Chose one of the options to install 
