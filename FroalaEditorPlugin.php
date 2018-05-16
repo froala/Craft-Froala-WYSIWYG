@@ -23,7 +23,7 @@ class FroalaEditorPlugin extends BasePlugin
      */
     public function getVersion()
     {
-        return '2.7.0';
+        return '2.8.1';
     }
 
     /**
