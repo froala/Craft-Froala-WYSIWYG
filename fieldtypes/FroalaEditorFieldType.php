@@ -72,6 +72,8 @@ class FroalaEditorFieldType extends BaseFieldType
     protected function defineSettings()
     {
         return [
+            'cleanupHtml'         => [AttributeType::Bool, 'default' => false],
+            'purifyHtml'          => [AttributeType::Bool, 'default' => true],
             'assetsImagesSource'  => [AttributeType::Number, 'min' => 0],
             'assetsImagesSubPath' => [AttributeType::String],
             'assetsFilesSource'   => [AttributeType::Number, 'min' => 0],
@@ -100,18 +102,21 @@ class FroalaEditorFieldType extends BaseFieldType
         // Render input HTML javascript
         $this->getInputHtmlJavascript($id, $pluginSettings, $fieldSettings);
 
+        // parse references
+        $value = craft()->froalaEditor_field->parseRefs($value);
+
         // Return view
         $variables = [
             'id'    => $id,
             'name'  => $name,
-            'value' => $value,
+            'value' => craft()->froalaEditor_field->parseRefs($value),
         ];
 
         return craft()->templates->render('froalaeditor/fieldtype/input', $variables);
     }
 
     /**
-     * @param int       $id
+     * @param int $id
      * @param BaseModel $pluginSettings
      * @param BaseModel $fieldSettings
      */
@@ -169,13 +174,13 @@ class FroalaEditorFieldType extends BaseFieldType
                     craft()->froalaEditor_field->determineFolderId(
                         $fieldSettings->assetsImagesSource,
                         $fieldSettings->assetsImagesSubPath
-                    )
+                    ),
                 ],
                 'craftFileSources'           => [
                     craft()->froalaEditor_field->determineFolderId(
                         $fieldSettings->assetsFilesSource,
                         $fieldSettings->assetsFilesSubPath
-                    )
+                    ),
                 ],
             ],
             'pluginSettings' => $pluginSettings,
@@ -185,5 +190,17 @@ class FroalaEditorFieldType extends BaseFieldType
 
         // Activate editor
         craft()->templates->includeJs('new Craft.FroalaEditorInput(' . JsonHelper::encode($settings) . ');');
+    }
+
+    /**
+     * @inheritDoc IFieldType::prepValueFromPost()
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    public function prepValueFromPost($value)
+    {
+        return craft()->froalaEditor_field->prepValueFromPost($value);
     }
 }

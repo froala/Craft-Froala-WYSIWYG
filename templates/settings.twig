@@ -39,3 +39,21 @@
     options: editorPlugins,
     values: settings.enabledPlugins
 }) }}
+
+<hr>
+
+{{ forms.lightswitchField({
+    label: 'HTML Purifier'|t,
+    instructions: 'Whether or not to purify the HTML code to standard compliant code and remove any potential malicious code.'|t,
+    id: 'purifyHtml',
+    name: 'purifyHtml',
+    on: settings.purifyHtml
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Cleanup HTML'|t,
+    instructions: 'Whether or not to clean HTML code from inline style elements.'|t,
+    id: 'cleanupHtml',
+    name: 'cleanupHtml',
+    on: settings.cleanupHtml
+}) }}

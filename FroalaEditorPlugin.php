@@ -8,6 +8,9 @@
 
 namespace Craft;
 
+/**
+ * Class FroalaEditorPlugin
+ */
 class FroalaEditorPlugin extends BasePlugin
 {
     /**
@@ -24,14 +27,6 @@ class FroalaEditorPlugin extends BasePlugin
     public function getVersion()
     {
         return '2.8.1';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getSchemaVersion()
-    {
-        return '1.0.0';
     }
 
     /**
@@ -108,13 +103,37 @@ class FroalaEditorPlugin extends BasePlugin
      */
     protected function defineSettings()
     {
-        return array(
-            'licenseKey' => array(AttributeType::String),
-            'customCssType' => array(AttributeType::String),
-            'customCssFile' => array(AttributeType::String),
-            'customCssClasses' => array(AttributeType::String),
-            'enabledPlugins' => array(AttributeType::Mixed),
-        );
+        return [
+            'licenseKey'       => [AttributeType::String],
+            'customCssType'    => [AttributeType::String],
+            'customCssFile'    => [AttributeType::String],
+            'customCssClasses' => [AttributeType::String],
+            'enabledPlugins'   => [AttributeType::Mixed],
+            'cleanupHtml'      => [AttributeType::Bool, 'default' => false],
+            'purifyHtml'       => [AttributeType::Bool, 'default' => true],
+            'purifierConfig'   => [AttributeType::Mixed],
+        ];
+    }
+
+    /**
+     * Returns the HTML Purifier config used by this field.
+     *
+     * @return array
+     */
+    public function getPurifierConfig()
+    {
+        $file = $this->getSettings()->purifierConfig;
+        $path = craft()->path->getConfigPath() . 'htmlpurifier/' . $file;
+
+        if (!$file || !IOHelper::fileExists($path)) {
+            return array(
+                'Attr.AllowedFrameTargets' => ['_blank'],
+            );
+        }
+
+        $json = IOHelper::getFileContents($path);
+
+        return JsonHelper::decode($json);
     }
 
     /**

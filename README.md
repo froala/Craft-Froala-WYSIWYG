@@ -6,8 +6,10 @@ __[Check the Craft CMS v3 version here](https://github.com/froala/Craft-3-Froala
 
 ## Known issue
 
-Currently we're facing issues regarding inserting links to selected text and images.
-The links are all added to the editor instead of added to the selected text or image.
+- Inserting links to selected text is adding links to the bottom of the field
+- Inserting links to images is adding links to the bottomg of the field
+
+Sorry for the inconvience. We're working on these annoying issues. But we decided to release a new version because of some missing important other features (like saving links the Craft way)
 
 ## Installation
 

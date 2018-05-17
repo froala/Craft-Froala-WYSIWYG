@@ -86,7 +86,11 @@
                             title = selectedText.length > 0 ? selectedText : element.label;
 
                         $popup.find('input[name="href"]').val(url);
-                        $popup.find('input[name="text"]').val(title);
+
+                        var currentText = $popup.find('input[name="text"]').val();
+                        if (currentText.length === 0) {
+                            $popup.find('input[name="text"]').val(title);
+                        }
                     }
                 }
             );
@@ -224,10 +228,8 @@
     $.FE.DefineIcon('craftLinkEntry', { NAME: 'newspaper-o' });
     $.FE.RegisterCommand('craftLinkEntry', {
         title: 'Link to Craft Entry',
-        undo: false,
         focus: true,
-        refreshOnCallback: false,
-        popup: true,
+        refreshOnCallback: true,
         callback: function () {
             this.craft.showEntrySelectModal();
         }

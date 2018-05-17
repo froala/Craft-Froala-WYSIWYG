@@ -75,7 +75,7 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
         foreach ($allTransforms as $transform) {
             $transformList[] = [
                 'handle' => HtmlHelper::encode($transform->handle),
-                'name' => HtmlHelper::encode($transform->name)
+                'name'   => HtmlHelper::encode($transform->name),
             ];
         }
 
@@ -83,9 +83,91 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
     }
 
     /**
-     * @param int    $folderSourceId
+     * @param $value
+     * @return null|string|string[]
+     */
+    public function parseRefs($value)
+    {
+        if ($value instanceof RichTextData) {
+
+            $value = $value->getRawContent();
+        }
+
+        if (strpos($value, '{') !== false) {
+
+            // Preserve the ref tags with hashes {type:id:url} => {type:id:url}#type:id
+            $value = preg_replace_callback('/(href=|src=)([\'"])(\{(\w+\:\d+\:' . HandleValidator::$handlePattern . ')\})(#[^\'"#]+)?\2/', function ($matches) {
+                return $matches[1] . $matches[2] . $matches[3] . (!empty($matches[5]) ? $matches[5] : '') . '#' . $matches[4] . $matches[2];
+            }, $value);
+
+            // Now parse 'em
+            $value = craft()->elements->parseRefs($value);
+        }
+
+        return $value;
+    }
+
+    /**
+     * @param $value
+     * @return mixed|null|string|string[]
+     */
+    public function prepValueFromPost($value)
+    {
+        if ($value) {
+
+            if ($this->getPlugin()->getSettings()->purifyHtml) {
+
+                $purifier = new \CHtmlPurifier();
+                $purifier->setOptions($this->getPlugin()->getPurifierConfig());
+                $value = $purifier->purify($value);
+            }
+
+            if ($this->getPlugin()->getSettings()->cleanupHtml) {
+
+                // Remove <span> and <font> tags
+                $value = preg_replace('/<(?:span|font)\b[^>]*>/', '', $value);
+                $value = preg_replace('/<\/(?:span|font)>/', '', $value);
+
+                // Remove inline styles
+                $value = preg_replace('/(<(?:h1|h2|h3|h4|h5|h6|p|div|blockquote|pre|strong|em|b|i|u|a)\b[^>]*)\s+style="[^"]*"/', '$1', $value);
+
+                // Remove empty tags
+                $value = preg_replace('/<(h1|h2|h3|h4|h5|h6|p|div|blockquote|pre|strong|em|a|b|i|u)\s*><\/\1>/', '', $value);
+            }
+        }
+
+        // Find any element URLs and swap them with ref tags
+        $value = preg_replace_callback('/(href=|src=)([\'"])[^\'"#]+?(#[^\'"#]+)?(?:#|%23)(\w+):(\d+)(:' . HandleValidator::$handlePattern . ')?\2/', function ($matches) {
+
+            // Create the ref tag, and make sure :url is in there
+            $refTag = '{' . $matches[4] . ':' . $matches[5] . (!empty($matches[6]) ? $matches[6] : ':url') . '}';
+            $hash = (!empty($matches[3]) ? $matches[3] : '');
+
+            if ($hash) {
+
+                // Make sure that the hash isn't actually part of the parsed URL
+                // (someone's Entry URL Format could be "#{slug}", etc.)
+                $url = craft()->elements->parseRefs($refTag);
+
+                if (mb_strpos($url, $hash) !== false) {
+                    $hash = '';
+                }
+            }
+
+            return $matches[1] . $matches[2] . $refTag . $hash . $matches[2];
+
+        }, $value);
+
+        // Encode any 4-byte UTF-8 characters.
+        $value = StringHelper::encodeMb4($value);
+
+        return $value;
+    }
+
+    /**
+     * @param int $folderSourceId
      * @param string $folderSubPath
-     * @param bool   $createDynamicFolders
+     * @param bool $createDynamicFolders
      * @return string
      * @throws \Exception
      * @throws InvalidSubpathException
@@ -110,7 +192,7 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
 
                 $folder = craft()->assets->findFolder([
                     'parentId' => $userFolder->id,
-                    'name'     => $folderName
+                    'name'     => $folderName,
                 ]);
 
                 if ($folder) {
@@ -173,7 +255,7 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
 
             $folder = craft()->assets->findFolder([
                 'sourceId' => $sourceId,
-                'path'     => $subPath . '/'
+                'path'     => $subPath . '/',
             ]);
 
             // Ensure that the folder exists
@@ -190,7 +272,7 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
                 foreach ($segments as $segment) {
                     $folder = craft()->assets->findFolder([
                         'parentId' => $parentFolder->id,
-                        'name'     => $segment
+                        'name'     => $segment,
                     ]);
 
                     // Create it if it doesn't exist
@@ -210,7 +292,7 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
 
     /**
      * @param AssetFolderModel $currentFolder
-     * @param string           $folderName
+     * @param string $folderName
      * @return integer
      */
     private function createSubFolder(AssetFolderModel $currentFolder, $folderName)
@@ -224,7 +306,7 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
                     'parentId' => $currentFolder->id,
                     'name'     => $folderName,
                     'sourceId' => $currentFolder->sourceId,
-                    'path'     => ($currentFolder->parentId ? $currentFolder->path . $folderName : $folderName) . '/'
+                    'path'     => ($currentFolder->parentId ? $currentFolder->path . $folderName : $folderName) . '/',
                 ]
             );
             $folderId = craft()->assets->storeFolder($newFolder);
