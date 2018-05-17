@@ -14,4 +14,9 @@ return array(
 
     'Enabled Plugins' => 'Geactiveerde plugins',
     'Enable or disable plugins to use for the editor.' => 'Activeer of deactiveer de plugins voor deze editor.',
+
+    'HTML Purifier' => 'HTML Standaard',
+    'Whether or not to purify the HTML code to standard compliant code and remove any potential malicious code.' => 'Wel of niet de zuiveren van de HTML van kwaadwillende code en verplichten van code standaarden.',
+    'Cleanup HTML' => 'HTML code opschonen',
+    'Whether or not to clean HTML code from inline style elements.' => 'Wel of niet verwijderen van inline stijl elementen in de HTML code.',
 );
