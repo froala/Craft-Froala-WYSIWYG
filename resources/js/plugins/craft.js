@@ -70,13 +70,16 @@
                 function(elements) {
                     if ($currentImage) {
                         editor.image.edit($currentImage);
+
+                        // re-focus the popup
+                        editor.popups.show('link.insert');
                     } else {
                         editor.selection.restore();
-                    }
 
-                    // re-focus the popup
-                    if (!editor.popups.isVisible('link.insert')) {
-                        editor.popups.show('link.insert');
+                        // re-focus the popup if not visible
+                        if (!editor.popups.isVisible('link.insert')) {
+                            editor.popups.show('link.insert');
+                        }
                     }
 
                     // add-in element link details
@@ -197,6 +200,8 @@
         }
 
         function _elementModal(type, storageKey, sources, criteria, addOpts, callback) {
+            // Don't blur editor when opening elementModal
+            editor.events.disableBlur();
 
             var modalOpts = {
                 storageKey: (storageKey || 'Froala.Craft.Modal.' + type),
