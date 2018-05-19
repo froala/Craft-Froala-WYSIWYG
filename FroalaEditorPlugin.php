@@ -18,7 +18,7 @@ class FroalaEditorPlugin extends BasePlugin
      */
     public function getName()
     {
-        return 'Froala Editor';
+        return 'Froala WYSIWYG Editor';
     }
 
     /**
@@ -26,7 +26,15 @@ class FroalaEditorPlugin extends BasePlugin
      */
     public function getVersion()
     {
-        return '2.8.1';
+        return '2.8.1-RC1';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSchemaVersion()
+    {
+        return $this->getVersion();
     }
 
     /**
@@ -62,40 +70,11 @@ class FroalaEditorPlugin extends BasePlugin
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function onAfterInstall()
-    {
-        // Convert all existing Rich Text fields to Froala Editor
-        craft()->db->createCommand()->update(
-            'fields',
-            array('type' => 'FroalaEditor'),
-            array('type' => 'RichText')
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function onBeforeUninstall()
-    {
-        // Convert all existing Froala Editor fields back to Rich Text
-        craft()->db->createCommand()->update(
-            'fields',
-            array('type' => 'RichText'),
-            array('type' => 'FroalaEditor')
-        );
-    }
-
-    /**
      * {@inheritdoc
      */
-    public function getSettingsHtml()
+    public function getSettingsUrl()
     {
-        return craft()->templates->render('froalaeditor/settings', array(
-            'settings' => $this->getSettings(),
-            'editorPlugins' => $this->getEditorPlugins(),
-        ));
+        return 'froala-editor/settings/general';
     }
 
     /**
@@ -104,14 +83,26 @@ class FroalaEditorPlugin extends BasePlugin
     protected function defineSettings()
     {
         return [
+            'migrated'         => [AttributeType::String],
             'licenseKey'       => [AttributeType::String],
             'customCssType'    => [AttributeType::String],
             'customCssFile'    => [AttributeType::String],
-            'customCssClasses' => [AttributeType::String],
+            'customCssClasses' => [AttributeType::Mixed],
             'enabledPlugins'   => [AttributeType::Mixed],
             'cleanupHtml'      => [AttributeType::Bool, 'default' => false],
             'purifyHtml'       => [AttributeType::Bool, 'default' => true],
-            'purifierConfig'   => [AttributeType::Mixed],
+            'purifierConfig'   => [AttributeType::String],
+        ];
+    }
+
+    /**
+     * {@inheritdoc
+     */
+    public function registerCpRoutes()
+    {
+        return [
+            'froala-editor/settings'                            => ['action' => 'froalaEditor/settings/show'],
+            'froala-editor/settings/(?P<settingsType>{handle})' => ['action' => 'froalaEditor/settings/show'],
         ];
     }
 
@@ -126,9 +117,9 @@ class FroalaEditorPlugin extends BasePlugin
         $path = craft()->path->getConfigPath() . 'htmlpurifier/' . $file;
 
         if (!$file || !IOHelper::fileExists($path)) {
-            return array(
+            return [
                 'Attr.AllowedFrameTargets' => ['_blank'],
-            );
+            ];
         }
 
         $json = IOHelper::getFileContents($path);
@@ -137,28 +128,28 @@ class FroalaEditorPlugin extends BasePlugin
     }
 
     /**
-     * Returns all possible plugins for the editor
+     * @param string $dir
      * @return array
      */
-    public function getEditorPlugins()
+    public function getCustomConfigOptions($dir)
     {
-        $pluginDir = __DIR__ . DIRECTORY_SEPARATOR;
-        $pluginDir .= implode(DIRECTORY_SEPARATOR, array(
-            'resources', 'lib', 'v' . $this->getVersion(), 'js', 'plugins'
-        )) . DIRECTORY_SEPARATOR;
+        $options = ['' => Craft::t('Default')];
+        $path = craft()->path->getConfigPath() . DIRECTORY_SEPARATOR . rtrim($dir, '/') . DIRECTORY_SEPARATOR;
 
-        $plugins = array();
-        foreach (glob($pluginDir . '*.min.js') as $pluginFile) {
-            $fileName = basename($pluginFile);
-            $pluginName = str_replace('.min.js', '', $fileName);
+        if (is_dir($path)) {
 
-            $pluginLabel = str_replace('_', ' ', $pluginName);
-            $pluginLabel = ucwords($pluginLabel);
+            $files = FileHelper::findFiles($path, [
+                'only'      => ['*.json'],
+                'recursive' => false,
+            ]);
 
-            $plugins[$pluginName] = $pluginLabel;
+            foreach ($files as $file) {
+                $basename = pathinfo($file, PATHINFO_BASENAME);
+                $options[$basename] = Craft::t( ucfirst(pathinfo($file, PATHINFO_FILENAME)) );
+            }
         }
 
-        return $plugins;
+        return $options;
     }
 
     /**

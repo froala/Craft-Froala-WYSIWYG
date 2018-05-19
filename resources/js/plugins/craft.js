@@ -134,7 +134,7 @@
                                 url += ':' + transform;
                             }
 
-                            editor.image.insert(url, false, { 'asset-id': asset.id });
+                            editor.image.insert(url, false);
                         }
 
                         return true;
@@ -171,7 +171,7 @@
                     if (assets.length) {
                         for (var i = 0; i < assets.length; i++) {
                             var asset = assets[i],
-                                url = asset.url + '#asset:' + asset.id;
+                                url = asset.url + '#' + editor.opts.craftAssetElementRefHandle + ':' + asset.id;
 
                             if (transform) {
                                 url += ':' + transform;
