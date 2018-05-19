@@ -27,7 +27,6 @@
 
     $.extend($.FE.DEFAULTS, {
         // general
-        craftElementSiteId: false,
         craftAssetElementType: false,
         craftAssetElementRefHandle: false,
         // links
@@ -50,7 +49,8 @@
     $.FE.PLUGINS.craft = function (editor) {
 
         function showEntrySelectModal() {
-            var $popup = editor.popups.get('link.insert'),
+            var disabledElementIds = [],
+                $popup = editor.popups.get('link.insert'),
                 selectedText = (editor.selection.text() || false);
 
             // save selection before modal is shown
@@ -59,12 +59,25 @@
                 editor.selection.save();
             }
 
+            // check the src url containing '#{refhandle}:{id}[:{transform}]'
+            var urlValue = $popup.find('input[name="href"]').val();
+            if (urlValue && urlValue.indexOf('#') !== -1) {
+
+                var hashValue = urlValue.substr(urlValue.indexOf('#'));
+                hashValue = decodeURIComponent(hashValue);
+
+                if (hashValue.indexOf(':') !== -1) {
+                    disabledElementIds.push(hashValue.split(':')[1]);
+                }
+            }
+
             _elementModal(
                 editor.opts.craftLinkElementType,
                 editor.opts.craftLinkStorageKey,
                 editor.opts.craftLinkSources,
                 editor.opts.craftLinkCriteria,
                 {
+                    disabledElementIds: disabledElementIds,
                     transforms: editor.opts.craftImageTransforms
                 },
                 function(elements) {
@@ -134,7 +147,7 @@
             var disabledElementIds = [],
                 $currentImage = editor.image.get();
 
-            // check the src url containing '#asset:{id}[:{transform}]'
+            // check the src url containing '#{refhandle}:{id}[:{transform}]'
             if ($currentImage.attr('src').indexOf('#') !== -1) {
 
                 var hashValue = $currentImage.attr('src').substr($currentImage.attr('src').indexOf('#'));
