@@ -2,9 +2,10 @@
   {
     "version": "2.8.1-RC1",
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/master.zip",
-    "date": "2018-05-19T023:20:00+02:00",
+    "date": "2018-05-22T11:45:00+02:00",
     "notes": [
       "[Added] Support for using Asset sources for custom CSS FIle.",
+      "[Added] Support for using HTML purifier.",
       "[Improved] Using editable-table for custom css classes (previous data is migrated!).",
       "[Improved] Updated integration javascript to be compatible with Craft 3 plugin.",
       "[Improved] Updated Froala Editor from v2.7.0 to v2.8.1"
