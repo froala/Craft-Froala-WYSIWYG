@@ -38,6 +38,20 @@ class FroalaEditorPlugin extends BasePlugin
     }
 
     /**
+     * @return boolean|string
+     */
+    public function getEditorVersion()
+    {
+        $version = $this->getVersion();
+        if (false !== ($basePos = strpos($version, '-'))) {
+            $version = substr($version, 0, $basePos);
+        }
+
+        return $version;
+
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getReleaseFeedUrl()

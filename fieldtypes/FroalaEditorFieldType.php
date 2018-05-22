@@ -139,7 +139,7 @@ class FroalaEditorFieldType extends BaseFieldType
         $namespacedId = craft()->templates->namespaceInputId($id);
 
         // Get the used Froala Version
-        $froalaVersion = craft()->froalaEditor_field->getPlugin()->getVersion();
+        $froalaVersion = craft()->froalaEditor_field->getPlugin()->getEditorVersion();
 
         // Include our assets
         craft()->templates->includeCssFile('//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css');

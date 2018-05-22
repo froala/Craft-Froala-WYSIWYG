@@ -55,7 +55,7 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
         $pluginDir .= implode(DIRECTORY_SEPARATOR, [
                 'resources',
                 'lib',
-                'v' . $this->getPlugin()->getVersion(),
+                'v' . $this->getPlugin()->getEditorVersion(),
                 'js',
                 'plugins',
             ]) . DIRECTORY_SEPARATOR;
