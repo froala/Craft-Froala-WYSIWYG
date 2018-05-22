@@ -8,6 +8,9 @@
 
 namespace Craft;
 
+/**
+ * Class FroalaEditorFieldType
+ */
 class FroalaEditorFieldType extends BaseFieldType
 {
     /**
@@ -15,7 +18,7 @@ class FroalaEditorFieldType extends BaseFieldType
      */
     public function getName()
     {
-        return Craft::t('Rich Text (Froala Editor)');
+        return Craft::t('Froala WYSIWYG');
     }
 
     /**
@@ -46,6 +49,18 @@ class FroalaEditorFieldType extends BaseFieldType
     }
 
     /**
+     * @inheritDoc IFieldType::prepValueFromPost()
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    public function prepValueFromPost($value)
+    {
+        return craft()->froalaEditor_field->prepValueFromPost($value);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getSettingsHtml()
@@ -57,10 +72,7 @@ class FroalaEditorFieldType extends BaseFieldType
 
         return craft()->templates->render('froalaeditor/fieldtype/settings', [
             'settings'       => $this->getSettings(),
-            'pluginSettings' => [
-                'customCssFile'    => craft()->froalaEditor_field->getPlugin()->getSettings()->getAttribute('customCssFile'),
-                'customCssClasses' => craft()->froalaEditor_field->getPlugin()->getSettings()->getAttribute('customCssClasses'),
-            ],
+            'pluginSettings' => craft()->froalaEditor_field->getPlugin()->getSettings(),
             'sourceOptions'  => $sourceOptions,
             'editorPlugins'  => craft()->froalaEditor_field->getEditorPlugins(),
         ]);
@@ -72,16 +84,17 @@ class FroalaEditorFieldType extends BaseFieldType
     protected function defineSettings()
     {
         return [
-            'cleanupHtml'         => [AttributeType::Bool, 'default' => false],
-            'purifyHtml'          => [AttributeType::Bool, 'default' => true],
-            'assetsImagesSource'  => [AttributeType::Number, 'min' => 0],
-            'assetsImagesSubPath' => [AttributeType::String],
-            'assetsFilesSource'   => [AttributeType::Number, 'min' => 0],
-            'assetsFilesSubPath'  => [AttributeType::String],
-            'customCssType'       => [AttributeType::String],
-            'customCssFile'       => [AttributeType::String],
-            'customCssClasses'    => [AttributeType::String],
-            'enabledPlugins'      => [AttributeType::Mixed],
+            'cleanupHtml'              => [AttributeType::Bool, 'default' => false],
+            'purifyHtml'               => [AttributeType::Bool, 'default' => true],
+            'assetsImagesSource'       => [AttributeType::Number, 'min' => 0],
+            'assetsImagesSubPath'      => [AttributeType::String],
+            'assetsFilesSource'        => [AttributeType::Number, 'min' => 0],
+            'assetsFilesSubPath'       => [AttributeType::String],
+            'customCssType'            => [AttributeType::String],
+            'customCssFile'            => [AttributeType::String],
+            'customCssClasses'         => [AttributeType::String],
+            'customCssClassesOverride' => [AttributeType::Bool],
+            'enabledPlugins'           => [AttributeType::Mixed],
         ];
     }
 
@@ -126,7 +139,7 @@ class FroalaEditorFieldType extends BaseFieldType
         $namespacedId = craft()->templates->namespaceInputId($id);
 
         // Get the used Froala Version
-        $froalaVersion = craft()->froalaEditor_field->getPlugin()->getVersion();
+        $froalaVersion = craft()->froalaEditor_field->getPlugin()->getEditorVersion();
 
         // Include our assets
         craft()->templates->includeCssFile('//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css');
@@ -143,23 +156,7 @@ class FroalaEditorFieldType extends BaseFieldType
         craft()->templates->includeJsResource('froalaeditor/js/FroalaEditorInput.js');
 
         // Include a custom css files (per field or plugin-wide)
-        $customCssType = $fieldSettings->getAttribute('customCssType');
-        $customCssFile = $fieldSettings->getAttribute('customCssFile');
-        if (empty($customCssFile)) {
-            $customCssType = $pluginSettings->getAttribute('customCssType');
-            $customCssFile = $pluginSettings->getAttribute('customCssFile');
-        }
-
-        if (!empty($customCssFile)) {
-
-            // when not empty css type, it is a plugin resource
-            if (!empty($customCssType)) {
-                craft()->templates->includeCssResource($customCssType . '/' . $customCssFile);
-            } else {
-                // strip left slash, to be sure
-                craft()->templates->includeCssFile('/' . ltrim($customCssFile, '/'));
-            }
-        }
+        $this->includeCustomCSSFile($pluginSettings, $fieldSettings);
 
         $settings = [
             'id'             => $namespacedId,
@@ -193,14 +190,36 @@ class FroalaEditorFieldType extends BaseFieldType
     }
 
     /**
-     * @inheritDoc IFieldType::prepValueFromPost()
-     *
-     * @param string $value
-     *
-     * @return string
+     * @param BaseModel $pluginSettings
+     * @param BaseModel $fieldSettings
      */
-    public function prepValueFromPost($value)
+    private function includeCustomCSSFile(BaseModel $pluginSettings, BaseModel $fieldSettings)
     {
-        return craft()->froalaEditor_field->prepValueFromPost($value);
+        $customCssType = $fieldSettings->getAttribute('customCssType');
+        $customCssFile = $fieldSettings->getAttribute('customCssFile');
+        if (empty($customCssFile)) {
+            $customCssType = $pluginSettings->getAttribute('customCssType');
+            $customCssFile = $pluginSettings->getAttribute('customCssFile');
+        }
+
+        if (!empty($customCssFile)) {
+
+            switch ($customCssType) {
+                case (substr($customCssType, 0, 6) === 'plugin'):
+                    $pluginHandle = substr($customCssType, 7);
+                    craft()->templates->includeCssResource($pluginHandle . '/' . $customCssFile);
+                    break;
+
+                case (substr($customCssType, 0, 6) === 'source'):
+                    $sourceId = substr($customCssType, 7);
+                    $source = craft()->assetSources->getSourceById($sourceId);
+                    $customCssFile = rtrim($source->settings['url'], '/') . '/' . ltrim($customCssFile, '/');
+                // no-break
+                default:
+                    // strip left slash, to be sure
+                    craft()->templates->includeCssFile('/' . ltrim($customCssFile, '/'));
+                    break;
+            }
+        }
     }
 }

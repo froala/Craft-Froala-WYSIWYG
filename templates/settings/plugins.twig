@@ -1,0 +1,15 @@
+{% extends 'froalaEditor/_layouts/settings' %}
+{% import "_includes/forms" as forms %}
+
+{% block fields %}
+    {{ forms.checkboxSelectField({
+        id: 'froala-settings-enabled-plugins',
+        name: 'settings[enabledPlugins]',
+        label: 'Enabled Plugins'|t,
+        instructions: 'Enable or disable plugins to use for the editor. This is the overall setting. Fields can have their own enabled plugins, limited to this list.'|t,
+        options: plugins,
+        values: settings.enabledPlugins,
+        showAllOption: true,
+        first: true
+    }) }}
+{% endblock %}

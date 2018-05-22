@@ -30,7 +30,7 @@
         assembleParagraphStyles: function () {
             var list = {};
 
-            if (this.fieldSettings.customCssClassesOverride !== 1) {
+            if (this.fieldSettings.customCssClassesOverride !== '1') {
                 var pluginRows = this.pluginSettings.customCssClasses;
                 $.each(pluginRows, function (index, value) {
                     list[value.className] = value.displayName;

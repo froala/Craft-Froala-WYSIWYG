@@ -1,5 +1,5 @@
 {% import "_includes/forms" as forms %}
-{% import "froalaeditor/macros" as macros %}
+{% import "froalaEditor/_includes/macros" as macros %}
 
 {% set uploadInstructions = 'Where should files be uploaded when they are dragged directly onto the field, or uploaded from the front end?' %}
 {% set uploadInstructions = uploadInstructions ~ ' Note that the subfolder path can contain variables like <code>{slug}</code> or <code>{author.username}</code>.' %}
@@ -24,15 +24,34 @@
     errors: settings.getErrors('customCssFile')
 }, macros.customCssInput('customCss', settings)) }}
 
-{{ forms.textareaField({
+{{ forms.hidden({
+    name: 'customCssClasses',
+    value: ''
+}) }}
+
+{{ forms.editableTableField({
     id: 'customCssClasses',
     name: 'customCssClasses',
-    label: 'Custom CSS Classes'|t,
-    value: settings.customCssClasses,
-    rows: 3,
-    class: 'nicetext',
-    warning: (pluginSettings.customCssClasses is not empty ? "This will overrule the plugin-wide Custom CSS classes."|t),
-    instructions: 'Add custom Paragraph Style classes. Enter each on one line. You can format each line like: <code>class-name: CMS display name</code>.'|t
+    label: 'Paragraph CSS Classes'|t,
+    instructions: 'Add extra Paragraph Style classes.'|t,
+    rows: settings.customCssClasses,
+    cols: {
+        className: {
+            heading: 'CSS Class Name(s))'|t,
+            type: 'text'
+        },
+        displayName: {
+            heading: 'Display Name'|t,
+            type: 'text'
+        }
+    }
+}) }}
+
+{{ forms.lightswitchField({
+    id: 'froala-custom-css-classes-override',
+    name: 'customCssClassesOverride',
+    label: 'Override CSS settings' | t('froala-editor'),
+    instructions: 'Override the plugin CSS settings instead of concatenate them together.' | t('froala-editor')
 }) }}
 
 <hr>
@@ -44,22 +63,4 @@
     name: 'enabledPlugins',
     options: editorPlugins,
     values: settings.enabledPlugins
-}) }}
-
-<hr>
-
-{{ forms.lightswitchField({
-    label: 'HTML Purifier'|t,
-    instructions: 'Whether or not to purify the HTML code to standard compliant code and remove any potential malicious code.'|t,
-    id: 'purifyHtml',
-    name: 'purifyHtml',
-    on: settings.purifyHtml
-}) }}
-
-{{ forms.lightswitchField({
-    label: 'Cleanup HTML'|t,
-    instructions: 'Whether or not to clean HTML code from inline style elements.'|t,
-    id: 'cleanupHtml',
-    name: 'cleanupHtml',
-    on: settings.cleanupHtml
 }) }}

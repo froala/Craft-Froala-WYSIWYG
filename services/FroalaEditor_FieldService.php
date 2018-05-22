@@ -44,6 +44,37 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
     }
 
     /**
+     * Returns all possible plugins for the editor
+     *
+     * @return array
+     * @throws \CException
+     */
+    public function getAllEditorPlugins()
+    {
+        $pluginDir = dirname(__DIR__) . DIRECTORY_SEPARATOR;
+        $pluginDir .= implode(DIRECTORY_SEPARATOR, [
+                'resources',
+                'lib',
+                'v' . $this->getPlugin()->getEditorVersion(),
+                'js',
+                'plugins',
+            ]) . DIRECTORY_SEPARATOR;
+
+        $plugins = [];
+        foreach (glob($pluginDir . '*.min.js') as $pluginFile) {
+            $fileName = basename($pluginFile);
+            $pluginName = str_replace('.min.js', '', $fileName);
+
+            $pluginLabel = str_replace('_', ' ', $pluginName);
+            $pluginLabel = ucwords($pluginLabel);
+
+            $plugins[$pluginName] = $pluginLabel;
+        }
+
+        return $plugins;
+    }
+
+    /**
      * Returns a list with all possible editor plugins
      *
      * @return array
@@ -51,7 +82,7 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
      */
     public function getEditorPlugins()
     {
-        $editorPlugins = $this->getPlugin()->getEditorPlugins();
+        $editorPlugins = $this->getAllEditorPlugins();
         $pluginsEnabled = $this->getPlugin()->getSettings()->getAttribute('enabledPlugins');
         if (!empty($pluginsEnabled) && is_array($pluginsEnabled)) {
             foreach ($editorPlugins as $pluginName => $pluginLabel) {
