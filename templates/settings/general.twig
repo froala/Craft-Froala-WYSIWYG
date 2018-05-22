@@ -1,0 +1,60 @@
+{% extends 'froalaEditor/_layouts/settings' %}
+{% import "_includes/forms" as forms %}
+
+{% block fields %}
+    {{ forms.textField({
+        name: 'settings[licenseKey]',
+        label: 'License key'|t,
+        instructions: 'The license key for Froala editor usage on the current domain.'|t,
+        value: settings.licenseKey,
+        first: true,
+        autofocus: true
+    }) }}
+
+    {% if settings.licenseKey is empty %}
+        <div class="warning">
+            The Craft CMS plugin does not include a license for the editor. To get one, visit the
+            <a href="https://www.froala.com/wysiwyg-editor/pricing" target="_blank">Froala website</a>.
+        </div>
+    {% endif %}
+
+    <hr>
+
+    <a class="fieldtoggle" data-target="advanced">{{ 'Advanced'|t }}</a>
+
+    <div id="advanced" class="hidden">
+        {{ forms.lightswitchField({
+            id: 'settings-cleanupHtml',
+            name: 'settings[cleanupHtml]',
+            label: 'Clean up HTML?'|t,
+            instructions: 'Removes <code>&lt;span&gt;</code>’s, empty tags, and most <code>style</code> attributes on save.'|t,
+            on: settings.cleanupHtml
+        }) }}
+
+        {{ forms.lightswitchField({
+            id: 'settings-purifyHtml',
+            name: 'settings[purifyHtml]',
+            label: 'Purify HTML?'|t,
+            instructions: 'Removes any potentially-malicious code on save, by running the submitted data through <a href="http://htmlpurifier.org/" target="_blank">HTML Purifier</a>.'|t,
+            warning: 'Disable this at your own risk!'|t,
+            on: settings.purifyHtml,
+            toggle: 'purifier-config-container'
+        }) }}
+
+        <div id="purifier-config-container"{% if not settings.purifyHtml %} class="hidden"{% endif %}>
+            {{ forms.selectField({
+                id: 'froala-purifier-config',
+                label: "HTML Purifier Config"|t(),
+                name: 'settings[purifierConfig]',
+                options: purifierConfigOptions,
+                value: settings.purifierConfig,
+                instructions: "You can save custom {name} configs as {ext} files in {path}."|t({
+                    name: 'HTML Purifier Config',
+                    ext: '`.json`',
+                    path: '`config/htmlpurifier/`'
+                }) ~
+                ' <a href="http://htmlpurifier.org/live/configdoc/plain.html" target="_blank">' ~ "View available settings"|t ~ '</a>'
+            }) }}
+        </div>
+    </div>
+{% endblock %}

@@ -4,12 +4,11 @@ The implementation of the Froala Editor (license not included) for Craft CMS
 
 __[Check the Craft CMS v3 version here](https://github.com/froala/Craft-3-Froala-WYSIWYG/)__
 
-## Known issue
+## Known issue (help wanted!)
 
-- Inserting links to selected text is adding links to the bottom of the field
-- Inserting links to images is adding links to the bottomg of the field
+Adding links to Craft Entries causing issues when you double click on the entry to link to. Just click once and use the "Select" button.
 
-Sorry for the inconvience. We're working on these annoying issues. But we decided to release a new version because of some missing important other features (like saving links the Craft way)
+Sorry for the inconvience. We're working on these annoying issues. But we decided to release a new version because of some missing important other features (like saving links the Craft way).
 
 ## Installation
 

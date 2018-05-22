@@ -3,12 +3,23 @@
 
     {% set customCssOptions = [
         { label : 'Default', value: '' },
-        { optgroup: 'Plugin resource' },
     ] %}
 
-    {% for pluginHandle, plugin in craft.plugins.getPlugins %}
-        {% set customCssOptions = customCssOptions|merge({ (pluginHandle): plugin.getName }) -%}
-    {% endfor %}
+    {% set craftSources = craft.froalaEditor.getAssetSources %}
+    {% if craftSources is not empty %}
+        {% set customCssOptions = customCssOptions|merge([{ optgroup: 'Asset source' }]) -%}
+        {% for assetSource in craftSources %}
+            {% set customCssOptions = customCssOptions|merge({ ('source:' ~ assetSource.value): assetSource.label }) -%}
+        {% endfor %}
+    {% endif %}
+
+    {% set craftPlugins = craft.plugins.getPlugins %}
+    {% if craftPlugins is not empty %}
+        {% set customCssOptions = customCssOptions|merge([{ optgroup: 'Plugin resource' }]) -%}
+        {% for pluginHandle, plugin in craftPlugins %}
+            {% set customCssOptions = customCssOptions|merge({ ('plugin:' ~ pluginHandle): plugin.name }) -%}
+        {% endfor %}
+    {% endif %}
 
     <table class="inputs fullwidth">
         <tr>
