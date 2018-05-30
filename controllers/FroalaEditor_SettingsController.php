@@ -33,6 +33,7 @@ class FroalaEditor_SettingsController extends BaseController
 
         switch ($variables['settingsType']) {
             case 'general':
+                $variables['editorConfigOptions'] = $plugin->getCustomConfigOptions('froalaeditor');
                 $variables['purifierConfigOptions'] = $plugin->getCustomConfigOptions('htmlpurifier');
                 break;
 

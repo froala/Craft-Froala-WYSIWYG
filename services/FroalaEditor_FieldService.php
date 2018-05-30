@@ -44,6 +44,34 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
     }
 
     /**
+     * Returns the custom config used by this field.
+     *
+     * @param BaseModel $settings
+     * @param string    $settingsKey
+     * @param string    $subDir
+     *
+     * @return array
+     */
+    public function getCustomConfig(BaseModel $settings, $settingsKey, $subDir)
+    {
+        $file = $settings->$settingsKey;
+        $path = craft()->path->getConfigPath() . $subDir . DIRECTORY_SEPARATOR . $file;
+
+        if (!$file || !IOHelper::fileExists($path)) {
+
+            if ($settingsKey === 'purifierConfig') {
+                return $this->getPlugin()->getCustomConfig($settingsKey, $subDir);
+            }
+
+            return [];
+        }
+
+        $json = IOHelper::getFileContents($path);
+
+        return json_decode($json, true);
+    }
+
+    /**
      * Returns all possible plugins for the editor
      *
      * @return array
@@ -149,7 +177,7 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
             if ($this->getPlugin()->getSettings()->purifyHtml) {
 
                 $purifier = new \CHtmlPurifier();
-                $purifier->setOptions($this->getPlugin()->getPurifierConfig());
+                $purifier->setOptions($this->getPlugin()->getCustomConfig('purifierConfig', 'htmlpurifier'));
                 $value = $purifier->purify($value);
             }
 
