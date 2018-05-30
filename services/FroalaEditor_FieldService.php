@@ -149,7 +149,7 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
             if ($this->getPlugin()->getSettings()->purifyHtml) {
 
                 $purifier = new \CHtmlPurifier();
-                $purifier->setOptions($this->getPlugin()->getPurifierConfig());
+                $purifier->setOptions($this->getPlugin()->getCustomConfig('purifierConfig', 'htmlpurifier'));
                 $value = $purifier->purify($value);
             }
 

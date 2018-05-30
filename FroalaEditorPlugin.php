@@ -3,7 +3,7 @@
  * Froala Editor for Craft
  *
  * @package froalaeditor
- * @author Bert Oost
+ * @author  Bert Oost
  */
 
 namespace Craft;
@@ -106,6 +106,7 @@ class FroalaEditorPlugin extends BasePlugin
             'cleanupHtml'      => [AttributeType::Bool, 'default' => false],
             'purifyHtml'       => [AttributeType::Bool, 'default' => true],
             'purifierConfig'   => [AttributeType::String],
+            'editorConfig'     => [AttributeType::String],
         ];
     }
 
@@ -125,20 +126,25 @@ class FroalaEditorPlugin extends BasePlugin
      *
      * @return array
      */
-    public function getPurifierConfig()
+    public function getCustomConfig($settingsKey, $subDir)
     {
-        $file = $this->getSettings()->purifierConfig;
-        $path = craft()->path->getConfigPath() . 'htmlpurifier/' . $file;
+        $file = $this->getSettings()->$settingsKey;
+        $path = craft()->path->getConfigPath() . $subDir . DIRECTORY_SEPARATOR . $file;
 
         if (!$file || !IOHelper::fileExists($path)) {
-            return [
-                'Attr.AllowedFrameTargets' => ['_blank'],
-            ];
+
+            if ($settingsKey === 'purifierConfig') {
+                return [
+                    'Attr.AllowedFrameTargets' => ['_blank'],
+                ];
+            }
+
+            return [];
         }
 
         $json = IOHelper::getFileContents($path);
 
-        return JsonHelper::decode($json);
+        return json_decode($json, true);
     }
 
     /**
@@ -159,7 +165,7 @@ class FroalaEditorPlugin extends BasePlugin
 
             foreach ($files as $file) {
                 $basename = pathinfo($file, PATHINFO_BASENAME);
-                $options[$basename] = Craft::t( ucfirst(pathinfo($file, PATHINFO_FILENAME)) );
+                $options[$basename] = Craft::t(ucfirst(pathinfo($file, PATHINFO_FILENAME)));
             }
         }
 
@@ -169,7 +175,7 @@ class FroalaEditorPlugin extends BasePlugin
     /**
      * @param string $msg
      * @param string $logLevel
-     * @param bool $force
+     * @param bool   $force
      * @return void
      */
     public static function log($msg, $logLevel = LogLevel::Info, $force = false)

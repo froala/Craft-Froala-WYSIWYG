@@ -158,10 +158,13 @@ class FroalaEditorFieldType extends BaseFieldType
         // Include a custom css files (per field or plugin-wide)
         $this->includeCustomCSSFile($pluginSettings, $fieldSettings);
 
+        $customEditorConfig = craft()->froalaEditor_field->getPlugin()
+            ->getCustomConfig('editorConfig', 'froalaeditor');
+
         $settings = [
             'id'             => $namespacedId,
             'isAdmin'        => craft()->userSession->isAdmin(),
-            'editorConfig'   => [
+            'editorConfig'   => array_merge([
                 'craftLinkElementType'       => 'Entry',
                 'craftLinkElementRefHandle'  => 'entry',
                 'craftAssetElementType'      => 'Asset',
@@ -179,7 +182,7 @@ class FroalaEditorFieldType extends BaseFieldType
                         $fieldSettings->assetsFilesSubPath
                     ),
                 ],
-            ],
+            ], $customEditorConfig),
             'pluginSettings' => $pluginSettings,
             'fieldSettings'  => $fieldSettings,
             'corePlugins'    => FroalaEditor_FieldService::CORE_PLUGINS,
