@@ -122,7 +122,7 @@ class FroalaEditorPlugin extends BasePlugin
     }
 
     /**
-     * Returns the HTML Purifier config used by this field.
+     * Returns the custom config used by this plugin.
      *
      * @return array
      */

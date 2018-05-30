@@ -64,3 +64,19 @@
     options: editorPlugins,
     values: settings.enabledPlugins
 }) }}
+
+<hr>
+
+{{ forms.selectField({
+    id: 'froala-editor-config',
+    label: "Custom Editor Config"|t(),
+    name: 'editorConfig',
+    options: editorConfigOptions,
+    value: settings.editorConfig,
+    instructions: "You can save custom {name} configs as {ext} files in {path}."|t({
+        name: 'Froala Editor',
+        ext: '`.json`',
+        path: '`config/froalaeditor/`'
+    }) ~
+    ' <a href="https://www.froala.com/wysiwyg-editor/docs/options" target="_blank">' ~ "View available options"|t ~ '</a>'
+}) }}
