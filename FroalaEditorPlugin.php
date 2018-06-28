@@ -131,7 +131,7 @@ class FroalaEditorPlugin extends BasePlugin
         $file = $this->getSettings()->$settingsKey;
         $path = craft()->path->getConfigPath() . $subDir . DIRECTORY_SEPARATOR . $file;
 
-        if (!$file || !IOHelper::fileExists($path)) {
+        if (!$file || false === IOHelper::fileExists($path)) {
 
             if ($settingsKey === 'purifierConfig') {
                 return [

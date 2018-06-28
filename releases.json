@@ -4,6 +4,7 @@
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.1-rc.3.zip",
     "date": "2018-06-28T15:05:00+02:00",
     "notes": [
+      "[Fixed] Fixed reading html purifier json-config files.",
       "[Fixed] Moved back field-type behavior methods from field-service."
     ]
   },
