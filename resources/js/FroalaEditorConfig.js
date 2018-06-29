@@ -28,6 +28,10 @@
             this.config.scrollableContainer = '#' + this.settings.id + '-field';
         },
         assembleParagraphStyles: function () {
+            if (typeof this.config.paragraphStyles !== undefined) {
+                return;
+            }
+
             var list = {};
 
             if (this.fieldSettings.customCssClassesOverride !== '1') {
@@ -45,6 +49,10 @@
             this.config.paragraphStyles = list;
         },
         assembleEnabledPlugins: function () {
+            if (typeof this.config.pluginsEnabled !== undefined) {
+                return;
+            }
+
             var list = [],
                 enabledPlugins = this.pluginSettings.enabledPlugins,
                 fieldPlugins = this.fieldSettings.enabledPlugins;
@@ -77,10 +85,19 @@
             }
         },
         assembleToolbarButtons: function () {
-            this.config.toolbarButtons = this.getToolbarButtons('lg');
-            this.config.toolbarButtonsMD = this.getToolbarButtons('md');
-            this.config.toolbarButtonsSM = this.getToolbarButtons('sm');
-            this.config.toolbarButtonsXS = this.getToolbarButtons('xs');
+            if (typeof this.config.toolbarButtons === undefined) {
+                this.config.toolbarButtons = this.getToolbarButtons('lg');
+            }
+            if (typeof this.config.toolbarButtonsMD === undefined) {
+                this.config.toolbarButtonsMD = this.getToolbarButtons('md');
+            }
+            if (typeof this.config.toolbarButtonsSM === undefined) {
+                this.config.toolbarButtonsSM = this.getToolbarButtons('sm');
+            }
+            if (typeof this.config.toolbarButtonsXS === undefined) {
+                this.config.toolbarButtonsXS = this.getToolbarButtons('xs');
+            }
+
             // disable quick insert for now
             this.config.quickInsertButtons = false;
             this.config.quickInsertTags = [''];

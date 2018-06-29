@@ -4,6 +4,7 @@
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.1-rc.4.zip",
     "date": "2018-06-28T15:45:00+02:00",
     "notes": [
+      "[Fixed] Setting editor configurations only if not already defined by configuration file."
       "[Fixed] Styling toolbar separator causing button to appear on the right."
     ]
   },
