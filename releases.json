@@ -1,5 +1,13 @@
 [
   {
+    "version": "2.8.1-RC4",
+    "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.1-rc.4.zip",
+    "date": "2018-06-28T15:45:00+02:00",
+    "notes": [
+      "[Fixed] Styling toolbar separator causing button to appear on the right."
+    ]
+  },
+  {
     "version": "2.8.1-RC3",
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.1-rc.3.zip",
     "date": "2018-06-28T15:45:00+02:00",
