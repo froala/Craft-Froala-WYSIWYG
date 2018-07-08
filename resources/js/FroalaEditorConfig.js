@@ -28,7 +28,7 @@
             this.config.scrollableContainer = '#' + this.settings.id + '-field';
         },
         assembleParagraphStyles: function () {
-            if (typeof this.config.paragraphStyles !== undefined) {
+            if (typeof this.config.paragraphStyles !== 'undefined') {
                 return;
             }
 
@@ -49,7 +49,7 @@
             this.config.paragraphStyles = list;
         },
         assembleEnabledPlugins: function () {
-            if (typeof this.config.pluginsEnabled !== undefined) {
+            if (typeof this.config.pluginsEnabled !== 'undefined') {
                 return;
             }
 
@@ -85,16 +85,16 @@
             }
         },
         assembleToolbarButtons: function () {
-            if (typeof this.config.toolbarButtons === undefined) {
+            if (typeof this.config.toolbarButtons === 'undefined') {
                 this.config.toolbarButtons = this.getToolbarButtons('lg');
             }
-            if (typeof this.config.toolbarButtonsMD === undefined) {
+            if (typeof this.config.toolbarButtonsMD === 'undefined') {
                 this.config.toolbarButtonsMD = this.getToolbarButtons('md');
             }
-            if (typeof this.config.toolbarButtonsSM === undefined) {
+            if (typeof this.config.toolbarButtonsSM === 'undefined') {
                 this.config.toolbarButtonsSM = this.getToolbarButtons('sm');
             }
-            if (typeof this.config.toolbarButtonsXS === undefined) {
+            if (typeof this.config.toolbarButtonsXS === 'undefined') {
                 this.config.toolbarButtonsXS = this.getToolbarButtons('xs');
             }
 
