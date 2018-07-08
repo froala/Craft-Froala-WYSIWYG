@@ -1,5 +1,17 @@
 [
   {
+    "version": "2.8.1-RC4",
+    "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.1-rc.4.zip",
+    "date": "2018-07-08T12:00:00+02:00",
+    "notes": [
+      "[Fixed] Fixed issue reqarding disabling enabled plugins.",
+      "[Fixed] Fixed hitting control/cmd+s when editor is focused and saving the element.",
+      "[Fixed] Support for passing Craft's target language as editor language (if exists).",
+      "[Fixed] Setting editor configurations only if not already defined by configuration file.",
+      "[Fixed] Styling toolbar separator causing button to appear on the right."
+    ]
+  },
+  {
     "version": "2.8.1-RC3",
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.1-rc.3.zip",
     "date": "2018-06-28T15:45:00+02:00",

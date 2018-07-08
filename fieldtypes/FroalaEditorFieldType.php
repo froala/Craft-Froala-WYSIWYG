@@ -195,6 +195,7 @@ class FroalaEditorFieldType extends BaseFieldType
 
         // Get the used Froala Version
         $froalaVersion = craft()->froalaEditor_field->getPlugin()->getEditorVersion();
+        $froalaLanguage = craft()->froalaEditor_field->getLanguage();
 
         // Include our assets
         craft()->templates->includeCssFile('//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css');
@@ -204,6 +205,7 @@ class FroalaEditorFieldType extends BaseFieldType
         craft()->templates->includeCssResource('froalaeditor/css/theme.css');
 
         craft()->templates->includeJsResource('froalaeditor/lib/v' . $froalaVersion . '/js/froala_editor.pkgd.min.js');
+        craft()->templates->includeJsResource('froalaeditor/lib/v' . $froalaVersion . '/js/languages/' . $froalaLanguage . '.js');
 
         // custom replacements
         craft()->templates->includeJsResource('froalaeditor/js/plugins/craft.js');
@@ -244,6 +246,7 @@ class FroalaEditorFieldType extends BaseFieldType
                         $fieldSettings->assetsFilesSubPath
                     ),
                 ],
+                'language' => $froalaLanguage,
             ], $customEditorConfig),
             'pluginSettings' => $pluginSettings,
             'fieldSettings'  => $fieldSettings,
