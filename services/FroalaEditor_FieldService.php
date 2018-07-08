@@ -23,6 +23,45 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
         'selectAll'       => 'Select All',
     ];
 
+    const CORE_LANGUAGES = [
+        'ar'    => 'Arabic',
+        'bs'    => 'Bosnian',
+        'cs'    => 'Czech',
+        'da'    => 'Danish',
+        'de'    => 'German',
+        'en_ca' => 'English Canada',
+        'en_gb' => 'English United Kingdom',
+        'es'    => 'Spanish',
+        'et'    => 'Estionian',
+        'fa'    => 'Persian',
+        'fi'    => 'Finish',
+        'fr'    => 'French',
+        'he'    => 'Hebrew',
+        'hr'    => 'Croatian',
+        'hu'    => 'Hungarian',
+        'id'    => 'Idonesian',
+        'it'    => 'Italian',
+        'ja'    => 'Japanese',
+        'ko'    => 'Korean',
+        'me'    => 'Montenegrin',
+        'nb'    => 'Norwegian',
+        'nl'    => 'Dutch',
+        'pl'    => 'Polish',
+        'pt_br' => 'Portuguese Brazil',
+        'pt_pt' => 'Portuguese Portugal',
+        'ro'    => 'Romanian',
+        'ru'    => 'Russian',
+        'sk'    => 'Slovak',
+        'sr'    => 'Serbian',
+        'sv'    => 'Swedish',
+        'th'    => 'Thai',
+        'tr'    => 'Turkish',
+        'uk'    => 'Ukrainian',
+        'vi'    => 'Vietnamese',
+        'zh_cn' => 'Chinese China',
+        'zh_tw' => 'Chinese Taiwan',
+    ];
+
     /**
      * @var FroalaEditorPlugin
      */
@@ -139,5 +178,27 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
         }
 
         return $transformList;
+    }
+
+    /**
+     * Returns the language string applicable to the Froala Editor.
+     *
+     * @return string
+     */
+    public function getLanguage()
+    {
+        $craftLanguage = craft()->getTargetLanguage();
+        $craftLanguage = $language = strtolower(str_replace('-', '_', $craftLanguage));
+
+        if (!array_key_exists($language, self::CORE_LANGUAGES)) {
+            $language = substr($language, 0, strpos($language, '_'));
+        }
+
+        if (array_key_exists(strtolower($language), self::CORE_LANGUAGES)) {
+
+            return $language;
+        }
+
+        return $craftLanguage;
     }
 }
