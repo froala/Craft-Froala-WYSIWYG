@@ -68,6 +68,11 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
     protected $plugin;
 
     /**
+     * @var array
+     */
+    private $loadedPlugins = [];
+
+    /**
      * Return the plugin instance
      *
      * @return FroalaEditorPlugin
@@ -118,27 +123,46 @@ class FroalaEditor_FieldService extends BaseApplicationComponent
      */
     public function getAllEditorPlugins()
     {
-        $pluginDir = dirname(__DIR__) . DIRECTORY_SEPARATOR;
-        $pluginDir .= implode(DIRECTORY_SEPARATOR, [
+        if (empty($this->loadedPlugins)) {
+
+            $ds = DIRECTORY_SEPARATOR;
+            $path = dirname(__DIR__) . $ds;
+            $path .= implode($ds, [
                 'resources',
                 'lib',
                 'v' . $this->getPlugin()->getEditorVersion(),
                 'js',
                 'plugins',
-            ]) . DIRECTORY_SEPARATOR;
+            ]) . $ds;
+            $plugins = [];
 
-        $plugins = [];
-        foreach (glob($pluginDir . '*.min.js') as $pluginFile) {
-            $fileName = basename($pluginFile);
-            $pluginName = str_replace('.min.js', '', $fileName);
+            $files = FileHelper::findFiles($path, [
+                'level'     => -1,
+                'exclude'   => ['quick_insert.min.js', 'code_view.min.js'],
+            ]);
 
-            $pluginLabel = str_replace('_', ' ', $pluginName);
-            $pluginLabel = ucwords($pluginLabel);
+            foreach ($files as $pluginFile) {
+                if (substr($pluginFile, -6) !== 'min.js') {
+                    continue;
+                }
 
-            $plugins[$pluginName] = $pluginLabel;
+                $fileName = basename($pluginFile);
+                $pluginName = str_replace('.min.js', '', $fileName);
+                $pluginLabel = str_replace('_', ' ', $pluginName);
+                $pluginLabel = ucwords($pluginLabel);
+
+                $plugins[$pluginName] = $pluginLabel;
+            }
+
+            // add-in core plugins
+            $plugins = array_merge($plugins, self::CORE_PLUGINS);
+
+            ksort($plugins);
+
+            $this->loadedPlugins = $plugins;
         }
 
-        return $plugins;
+        return $this->loadedPlugins;
     }
 
     /**
