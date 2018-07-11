@@ -222,7 +222,7 @@ class FroalaEditorFieldType extends BaseFieldType
 
         $settings = [
             'id'             => $namespacedId,
-            'isAdmin'        => craft()->userSession->isAdmin(),
+            'allowCodeView'  => craft()->userSession->checkPermission('froala-allowCodeView'),
             'editorConfig'   => array_merge([
                 'craftLinkElementType'       => 'Entry',
                 'craftLinkElementRefHandle'  => 'entry',

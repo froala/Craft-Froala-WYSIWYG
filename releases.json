@@ -2,9 +2,11 @@
   {
     "version": "2.8.1",
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.1.zip",
-    "date": "2018-07-11T23:00:00+02:00",
+    "date": "2018-07-11T23:25:00+02:00",
     "notes": [
+      "[Added] Permission to grant users or groups to toggle HTML code view (not admins only).",
       "[Fixed] Issue regarding loading enabled-plugin values based on the library & core plugins.",
+      "[Improved] Removed code view option via plugin settings (since it's a permission now).",
       "[Improved] Removed custom css settings from field. Use globally plugin setting instead (compatible with Craft 3 version)."
     ]
   },

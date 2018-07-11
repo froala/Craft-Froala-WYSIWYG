@@ -200,7 +200,7 @@
                     break;
             }
 
-            if (this.settings.isAdmin) {
+            if (this.settings.allowCodeView) {
                 buttons.push('html');
             }
 

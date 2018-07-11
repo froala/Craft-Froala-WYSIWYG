@@ -173,6 +173,16 @@ class FroalaEditorPlugin extends BasePlugin
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function registerUserPermissions()
+    {
+        return array(
+            'froala-allowCodeView' => array('label' => Craft::t('Enable HTML Code view button')),
+        );
+    }
+
+    /**
      * @param string $msg
      * @param string $logLevel
      * @param bool   $force
