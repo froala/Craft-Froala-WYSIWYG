@@ -34,15 +34,8 @@
 
             var list = {};
 
-            if (this.fieldSettings.customCssClassesOverride !== '1') {
-                var pluginRows = this.pluginSettings.customCssClasses;
-                $.each(pluginRows, function (index, value) {
-                    list[value.className] = value.displayName;
-                });
-            }
-
-            var fieldRows = this.fieldSettings.customCssClasses;
-            $.each(fieldRows, function (index, value) {
+            var pluginRows = this.pluginSettings.customCssClasses;
+            $.each(pluginRows, function (index, value) {
                 list[value.className] = value.displayName;
             });
 
@@ -54,12 +47,7 @@
             }
 
             var list = [],
-                enabledPlugins = this.pluginSettings.enabledPlugins,
-                fieldPlugins = this.fieldSettings.enabledPlugins;
-
-            if (fieldPlugins !== '*' && $.isArray(fieldPlugins)) {
-                enabledPlugins = fieldPlugins;
-            }
+                enabledPlugins = this.pluginSettings.enabledPlugins;
 
             if (enabledPlugins !== '*' && $.isArray(enabledPlugins)) {
                 for (var i = 0; i < enabledPlugins.length; i++) {

@@ -141,11 +141,6 @@ class FroalaEditorFieldType extends BaseFieldType
             'assetsImagesSubPath'      => [AttributeType::String],
             'assetsFilesSource'        => [AttributeType::Number, 'min' => 0],
             'assetsFilesSubPath'       => [AttributeType::String],
-            'customCssType'            => [AttributeType::String],
-            'customCssFile'            => [AttributeType::String],
-            'customCssClasses'         => [AttributeType::String],
-            'customCssClassesOverride' => [AttributeType::Bool],
-            'enabledPlugins'           => [AttributeType::Mixed],
             'editorConfig'             => [AttributeType::String],
         ];
     }
@@ -213,7 +208,7 @@ class FroalaEditorFieldType extends BaseFieldType
         craft()->templates->includeJsResource('froalaeditor/js/FroalaEditorInput.js');
 
         // Include a custom css files (per field or plugin-wide)
-        $this->includeCustomCSSFile($pluginSettings, $fieldSettings);
+        $this->includeCustomCSSFile($pluginSettings);
 
         // get custom config (field OR plugin)
         $customEditorConfig = craft()->froalaEditor_field
@@ -261,14 +256,10 @@ class FroalaEditorFieldType extends BaseFieldType
      * @param BaseModel $pluginSettings
      * @param BaseModel $fieldSettings
      */
-    private function includeCustomCSSFile(BaseModel $pluginSettings, BaseModel $fieldSettings)
+    private function includeCustomCSSFile(BaseModel $pluginSettings)
     {
-        $customCssType = $fieldSettings->getAttribute('customCssType');
-        $customCssFile = $fieldSettings->getAttribute('customCssFile');
-        if (empty($customCssFile)) {
-            $customCssType = $pluginSettings->getAttribute('customCssType');
-            $customCssFile = $pluginSettings->getAttribute('customCssFile');
-        }
+        $customCssType = $pluginSettings->getAttribute('customCssType');
+        $customCssFile = $pluginSettings->getAttribute('customCssFile');
 
         if (!empty($customCssFile)) {
 

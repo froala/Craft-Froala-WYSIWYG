@@ -18,55 +18,6 @@
 
 <hr>
 
-{{ forms.field({
-    label: 'Custom CSS File'|t,
-    instructions: 'Include a custom style file for the editor to display content in your style. This file path could be a plugin resource or should be a relative to your site\'s document root path.'|t,
-    errors: settings.getErrors('customCssFile')
-}, macros.customCssInput('customCss', settings)) }}
-
-{{ forms.hidden({
-    name: 'customCssClasses',
-    value: ''
-}) }}
-
-{{ forms.editableTableField({
-    id: 'customCssClasses',
-    name: 'customCssClasses',
-    label: 'Paragraph CSS Classes'|t,
-    instructions: 'Add extra Paragraph Style classes.'|t,
-    rows: settings.customCssClasses,
-    cols: {
-        className: {
-            heading: 'CSS Class Name(s))'|t,
-            type: 'text'
-        },
-        displayName: {
-            heading: 'Display Name'|t,
-            type: 'text'
-        }
-    }
-}) }}
-
-{{ forms.lightswitchField({
-    id: 'froala-custom-css-classes-override',
-    name: 'customCssClassesOverride',
-    label: 'Override CSS settings' | t('froala-editor'),
-    instructions: 'Override the plugin CSS settings instead of concatenate them together.' | t('froala-editor')
-}) }}
-
-<hr>
-
-{{ forms.checkboxSelectField({
-    label: 'Enabled Plugins'|t,
-    instructions: 'Enable or disable plugins to use for the editor.'|t,
-    id: 'enabledPlugins',
-    name: 'enabledPlugins',
-    options: editorPlugins,
-    values: settings.enabledPlugins
-}) }}
-
-<hr>
-
 {{ forms.selectField({
     id: 'froala-editor-config',
     label: "Custom Editor Config"|t(),
