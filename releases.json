@@ -4,6 +4,7 @@
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.1.zip",
     "date": "2018-07-11T23:00:00+02:00",
     "notes": [
+      "[Fixed] Issue regarding loading enabled-plugin values based on the library & core plugins.",
       "[Improved] Removed custom css settings from field. Use globally plugin setting instead (compatible with Craft 3 version)."
     ]
   },
