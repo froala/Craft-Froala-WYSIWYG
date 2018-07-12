@@ -1,5 +1,13 @@
 [
   {
+    "version": "2.8.1.2",
+    "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.1.2.zip",
+    "date": "2018-07-12T10:35:00+02:00",
+    "notes": [
+      "[Fixed] Issue regarding loading the right Froala library based on the version number."
+    ]
+  },
+  {
     "version": "2.8.1.1",
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.1.1.zip",
     "date": "2018-07-12T09:00:00+02:00",
