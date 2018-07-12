@@ -22,11 +22,19 @@ class FroalaEditorPlugin extends BasePlugin
     }
 
     /**
+     * @return boolean|string
+     */
+    public function getEditorVersion()
+    {
+        return '2.8.1';
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getVersion()
     {
-        return '2.8.1.1';
+        return $this->getEditorVersion() . '.2';
     }
 
     /**
@@ -35,20 +43,6 @@ class FroalaEditorPlugin extends BasePlugin
     public function getSchemaVersion()
     {
         return $this->getVersion();
-    }
-
-    /**
-     * @return boolean|string
-     */
-    public function getEditorVersion()
-    {
-        $version = $this->getVersion();
-        if (false !== ($basePos = strpos($version, '-'))) {
-            $version = substr($version, 0, $basePos);
-        }
-
-        return $version;
-
     }
 
     /**
