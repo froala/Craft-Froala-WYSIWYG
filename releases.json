@@ -1,5 +1,13 @@
 [
   {
+    "version": "2.8.4.1",
+    "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.4.1.zip",
+    "date": "2018-07-16T22:15:00+02:00",
+    "notes": [
+      "[Improved] Fixed issue regarding inserting a file link with correct Craft's Asset referenced-tag {asset:<id>}."
+    ]
+  },
+  {
     "version": "2.8.4",
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.4.zip",
     "date": "2018-07-15T22:00:00+02:00",

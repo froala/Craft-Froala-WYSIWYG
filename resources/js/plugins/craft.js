@@ -201,7 +201,7 @@
                 function(elements) {
                     if (elements.length) {
                         var element = elements[0],
-                            url = element.url + '#' + editor.opts.craftLinkElementRefHandle + ':' + element.id,
+                            url = element.url + '#' + editor.opts.craftAssetElementRefHandle + ':' + element.id,
                             title = selectedText.length > 0 ? selectedText : element.label;
 
                         editor.link.insert(url, title);
