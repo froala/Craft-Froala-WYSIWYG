@@ -59,6 +59,8 @@ class FroalaEditorFieldType extends BaseFieldType
     {
         if ($value) {
 
+            $value = rawurldecode($value);
+
             $plugin = craft()->froalaEditor_field->getPlugin();
             $pluginSettings = $plugin->getSettings();
 

@@ -4,6 +4,7 @@
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.4.1.zip",
     "date": "2018-07-16T22:15:00+02:00",
     "notes": [
+      "[Fixed] Issue regarding encoded contents (ie. referenced tags).",
       "[Fixed] Capturing custom CSS file type switch case.",
       "[Fixed] Custom CSS field name to save settings correctly.",
       "[Improved] Fixed issue with updating a file link and the Link update popup window.",
