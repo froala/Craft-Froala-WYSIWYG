@@ -263,7 +263,7 @@ class FroalaEditorFieldType extends BaseFieldType
 
         if (!empty($customCssFile)) {
 
-            switch ($customCssType) {
+            switch (true) {
                 case (substr($customCssType, 0, 6) === 'plugin'):
                     $pluginHandle = substr($customCssType, 7);
                     craft()->templates->includeCssResource($pluginHandle . '/' . $customCssFile);
