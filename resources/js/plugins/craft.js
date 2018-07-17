@@ -186,7 +186,7 @@
             );
         }
 
-        function showFileInsertModal() {
+        function showFileInsertModal(viaPopup) {
             var viaPopup = viaPopup || false,
                 disabledElementIds = [],
                 selectedText = (editor.selection.text() || false);
