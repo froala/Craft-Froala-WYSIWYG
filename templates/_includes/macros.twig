@@ -1,4 +1,4 @@
-{% macro customCssInput(name, settings) %}
+{% macro customCssInput(name, settings, isSettingsField) %}
     {% from "_includes/forms" import select, text %}
 
     {% set customCssOptions = [
@@ -25,8 +25,8 @@
         <tr>
             <td class="thin">
                 {{ select({
-                    id: name ~ 'Type',
-                    name: name ~ 'Type',
+                    id: 'froala-' ~ name ~ 'Type',
+                    name: (isSettingsField ? ('settings[' ~ name ~ 'Type]') : (name ~ 'Type')),
                     options: customCssOptions,
                     value: settings[name ~ 'Type'],
                 }) }}
@@ -35,7 +35,7 @@
                 {{ text({
                     id: name ~ 'File',
                     class: 'ltr',
-                    name: name ~ 'File',
+                    name: (isSettingsField ? ('settings[' ~ name ~ 'File]') : (name ~ 'File')),
                     value: settings[name ~ 'File'],
                     placeholder: "path/to/css/file.css"|t
                 }) }}
