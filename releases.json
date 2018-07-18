@@ -1,5 +1,13 @@
 [
   {
+    "version": "2.8.4.2",
+    "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.4.2.zip",
+    "date": "2018-07-19T00:30:00+02:00",
+    "notes": [
+      "[Fixed] Bug loading Craft integrations when Enabled Plugins setting is set to something else than 'All'."
+    ]
+  },
+  {
     "version": "2.8.4.1",
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.4.1.zip",
     "date": "2018-07-18T10:10:00+02:00",
