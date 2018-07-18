@@ -2,7 +2,7 @@
   {
     "version": "2.8.4.1",
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.4.1.zip",
-    "date": "2018-07-16T22:15:00+02:00",
+    "date": "2018-07-18T10:10:00+02:00",
     "notes": [
       "[Fixed] Issue regarding encoded contents (ie. referenced tags).",
       "[Fixed] Capturing custom CSS file type switch case.",
