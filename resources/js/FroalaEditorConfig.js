@@ -69,6 +69,9 @@
                     list.push(camelCase(enabledPlugins[i]));
                 }
 
+                // always add our own craft plugin extension
+                list.push('craft');
+
                 this.config.pluginsEnabled = list;
             }
         },

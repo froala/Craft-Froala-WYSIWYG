@@ -34,7 +34,7 @@ class FroalaEditorPlugin extends BasePlugin
      */
     public function getVersion()
     {
-        return $this->getEditorVersion() . '.1';
+        return $this->getEditorVersion() . '.2';
     }
 
     /**
