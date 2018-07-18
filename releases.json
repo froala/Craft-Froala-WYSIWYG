@@ -1,5 +1,17 @@
 [
   {
+    "version": "2.8.4.1",
+    "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.4.1.zip",
+    "date": "2018-07-18T10:10:00+02:00",
+    "notes": [
+      "[Fixed] Issue regarding encoded contents (ie. referenced tags).",
+      "[Fixed] Capturing custom CSS file type switch case.",
+      "[Fixed] Custom CSS field name to save settings correctly.",
+      "[Improved] Fixed issue with updating a file link and the Link update popup window.",
+      "[Improved] Fixed issue regarding inserting a file link with correct Craft's Asset referenced-tag {asset:<id>}."
+    ]
+  },
+  {
     "version": "2.8.4",
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.4.zip",
     "date": "2018-07-15T22:00:00+02:00",

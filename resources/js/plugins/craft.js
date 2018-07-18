@@ -186,25 +186,56 @@
             );
         }
 
-        function showFileInsertModal() {
+        function showFileInsertModal(viaPopup) {
+            var viaPopup = viaPopup || false,
+                disabledElementIds = [],
+                selectedText = (editor.selection.text() || false);
+
+            if (viaPopup) {
+                var $popup = editor.popups.get('link.insert');
+
+                // check the src url containing '#asset:{id}[:{transform}]'
+                var urlValue = $popup.find('input[name="href"]').val();
+                if (urlValue && urlValue.indexOf('#') !== -1) {
+
+                    var hashValue = urlValue.substr(urlValue.indexOf('#'));
+                    hashValue = decodeURIComponent(hashValue);
+
+                    if (hashValue.indexOf(':') !== -1) {
+                        disabledElementIds.push(hashValue.split(':')[1]);
+                    }
+                }
+            }
+
             // save selection before modal is shown
             editor.selection.save();
-
-            var selectedText = (editor.selection.text() || false);
 
             _elementModal(
                 editor.opts.craftAssetElementType,
                 editor.opts.craftFileStorageKey,
                 editor.opts.craftFileSources,
                 editor.opts.craftFileCriteria,
-                null,
+                {
+                    disabledElementIds: disabledElementIds
+                },
                 function(elements) {
+
+                    // re-focus the popup
+                    if (viaPopup && !editor.popups.isVisible('link.insert')) {
+                        editor.popups.show('link.insert');
+                    }
+
                     if (elements.length) {
                         var element = elements[0],
-                            url = element.url + '#' + editor.opts.craftLinkElementRefHandle + ':' + element.id,
+                            url = element.url + '#' + editor.opts.craftAssetElementRefHandle + ':' + element.id,
                             title = selectedText.length > 0 ? selectedText : element.label;
 
-                        editor.link.insert(url, title);
+                        if (viaPopup) {
+                            // no title replace at update
+                            $popup.find('input[name="href"]').val(url);
+                        } else {
+                            editor.link.insert(url, title);
+                        }
 
                         return true;
                     }
@@ -253,8 +284,18 @@
         }
     });
 
+    $.FE.DefineIcon('craftLinkAsset', { NAME: 'file-o' });
+    $.FE.RegisterCommand('craftLinkAsset', {
+        title: 'Link to Craft Asset',
+        focus: true,
+        refreshOnCallback: true,
+        callback: function () {
+            this.craft.showFileInsertModal(true);
+        }
+    });
+
     $.extend($.FE.DEFAULTS, {
-        linkInsertButtons: ['craftLinkEntry']
+        linkInsertButtons: ['craftLinkEntry','craftLinkAsset']
     });
 
     /*

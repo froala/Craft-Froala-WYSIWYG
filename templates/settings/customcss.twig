@@ -7,7 +7,7 @@
         label: 'CSS File'|t,
         instructions: 'Include a custom style file for the editor to display content in your style. This file path could be inside an Asset Source, a Plugin resource or should be relative to your site\'s document root path.'|t,
         first: true
-    }, macros.customCssInput('customCss', settings)) }}
+    }, macros.customCssInput('customCss', settings, true)) }}
 
     {{ forms.hidden({
         name: 'settings[customCssClasses]',
