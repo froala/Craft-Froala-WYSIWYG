@@ -251,7 +251,7 @@
                 var newList = [];
                 for (var i = 0; i < this.config.pluginsEnabled.length; i++) {
                     var currentItem = this.config.pluginsEnabled[i];
-                    if (this.settings.corePlugins.indexOf(currentItem) === -1) {
+                    if (!(currentItem in this.settings.corePlugins)) {
                         newList.push(currentItem);
                     }
                 }
