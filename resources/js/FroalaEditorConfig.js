@@ -69,6 +69,11 @@
                     list.push(camelCase(enabledPlugins[i]));
                 }
 
+                // always add code-view when allowed
+                if (this.settings.allowCodeView) {
+                    list.push('codeView');
+                }
+
                 // always add our own craft plugin extension
                 list.push('craft');
 
@@ -251,7 +256,7 @@
                 var newList = [];
                 for (var i = 0; i < this.config.pluginsEnabled.length; i++) {
                     var currentItem = this.config.pluginsEnabled[i];
-                    if (this.settings.corePlugins.indexOf(currentItem) === -1) {
+                    if (!(currentItem in this.settings.corePlugins)) {
                         newList.push(currentItem);
                     }
                 }
