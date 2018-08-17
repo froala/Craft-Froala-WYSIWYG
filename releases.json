@@ -4,6 +4,7 @@
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.8.4.3.zip",
     "date": "2018-08-17T14:20:00+02:00",
     "notes": [
+      "[Fixed] Adding code-view plugin to enabled plugins when allowed to see code (permissions)",
       "[Fixed] Comparing enabled plugins regarding core plugins"
     ]
   },
