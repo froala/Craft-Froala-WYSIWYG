@@ -26,7 +26,7 @@ class FroalaEditorPlugin extends BasePlugin
      */
     public function getEditorVersion()
     {
-        return '2.8.4';
+        return '2.8.5';
     }
 
     /**
@@ -34,7 +34,7 @@ class FroalaEditorPlugin extends BasePlugin
      */
     public function getVersion()
     {
-        return $this->getEditorVersion() . '.3';
+        return $this->getEditorVersion();
     }
 
     /**
