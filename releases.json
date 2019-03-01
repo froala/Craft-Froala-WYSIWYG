@@ -1,5 +1,13 @@
 [
   {
+    "version": "2.9.3",
+    "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.9.3.zip",
+    "date": "2019-03-01T21:35:00+02:00",
+    "notes": [
+      "[Improved] Updated editor to version 2.9.3 along with the plugin version."
+    ]
+  },
+  {
     "version": "2.9.2",
     "downloadUrl": "https://github.com/froala/Craft-Froala-WYSIWYG/archive/v2.9.2.zip",
     "date": "2019-03-01T21:30:00+02:00",
